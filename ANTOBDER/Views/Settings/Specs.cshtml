@@ -1,0 +1,19 @@
+﻿@model ANTOBDER.Models.SpecOverview
+
+@{
+    ViewBag.Title = "Specs";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<section class="info">
+
+    <div>
+        Ram Kullanımı : @(Model.RamUsage/1024) MiB
+        <br />
+        Disk Kullanımı : @((Model.DiscUsage/1024).ToString("###,###")) MiB (% @((Model.DiscUsage/Model.DiscCapacity)*100))
+        <br />
+        Toplam Disk Sığası : @((Model.DiscCapacity/1024).ToString("###,###")) MiB
+    </div>
+
+</section>

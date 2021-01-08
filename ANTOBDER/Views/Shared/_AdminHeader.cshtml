@@ -1,0 +1,53 @@
+﻿<!-- ======= Header ======= -->
+<header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+
+        <h1 class="logo mr-auto">
+            <a href="@Url.Action("Index","Enter")">
+                Antobder
+            </a>
+        </h1>
+
+        <nav class="nav-menu d-none d-lg-block">
+            <ul>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li>
+                        Hoşgeldin @(
+                        ((System.Security.Claims.ClaimsIdentity)User.Identity).Claims
+                        .FirstOrDefault(c=>c.Type==System.Security.Claims.ClaimTypes.NameIdentifier
+                        ).Value)
+                        ! <span class="badge badge-dark">@User.Identity.GetRole()</span>
+                    </li>
+                    <li class="active"><a href="@Url.Action("Index","Home")">Ana Sayfa</a></li>
+                    <li class="active"><a href="@Url.Action("Index","Enter")">İçerik Yarat</a></li>
+                    <li><a href="@Url.Action("ListDynamicPages","Enter")">Dinamik Sayfaları Görüntüle</a></li>
+                    <li class="drop-down">
+                        <a href="#">Site Yönetimi</a>
+                        <ul>
+                            <li><a href="@Url.Action("Specs","Settings")">Disk/Hafıza Kullanımı</a></li>
+                            <li><a href="@Url.Action("Database","Settings")">Veritbanı Yedekleme/Sıfırlama</a></li>
+                            <li><a href="@Url.Action("Users","Settings")">Kullanıcılar</a></li>
+                        </ul>
+                    </li>
+                    <li class="drop-down">
+                        <a href="#">Listele</a>
+                        <ul>
+                            <li><a href="@Url.Action("ListArticle","Content")">Faaliyet/Haber Listele</a></li>
+                            <li><a href="@Url.Action("ListArticle","Content",new { listEditorialOnly=true})">Yazıları Listele</a></li>
+                            <li><a href="@Url.Action("ListArticle","Content",new { listAll=true})">Tüm İçerikleri Listele</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Logout","Enter")" class="btn btn-outline-dark">
+                            Çıkış Yap
+                        </a>
+                    </li>
+                }
+
+            </ul>
+        </nav><!-- .nav-menu -->
+
+
+    </div>
+</header><!-- End Header -->

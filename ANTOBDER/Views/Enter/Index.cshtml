@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/assets/vendor/summernote/summernote.min.css" rel="stylesheet" />
+<link href="~/assets/vendor/vanilla-tag/vanilla-tag.css" rel="stylesheet" />
+<style>
+    .row {
+        margin-bottom: 1em;
+    }
+</style>
+<section class="info">
+
+    <div class="section-title">
+        @if (TempData["Message"] != null)
+        {
+            <span>
+                Durum: <i>@TempData["Message"]</i>
+            </span><br />
+            if (TempData["Content"] != null)
+            {
+                <a target="_blank" href="@Url.Action("ReadArticle", "Content", new { id=((ANTOBDER.Models.BaseContent)TempData["Content"]).CID})">İçeriği görüntülemek için tıklayın (Yeni sayfada açılır)</a>
+            }
+        }
+    </div>
+    <h2>Yeni İçerik Ekle</h2>
+    <br />
+    <form method="post" action="@Url.Action("Create","Content")" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label class="text-danger" for="CID">İçerik Tipi* : </label>
+                <select name="CID" class="form-control" required contextmenu="">
+                    <option disabled selected value> --- Lütfen Seçiniz ---</option>
+                    <option value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))">Etkinlik/Haber Ekle</option>
+                    <option value="@(ANTOBDER._Extentions.CreateID(isEditorial:true))">Yazı Ekle</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+
+                <label class="text-danger" for="AddedOn">Eklenme Tarihi* : </label>
+                <input class="form-control" required name="AddedOn"
+                       type="datetime-local"
+                       value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+            </div>
+        </div>
+        <input name="HtmlBody" hidden class="d-none" />
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label class="text-danger" for="Header">Başlık* : </label>
+                <input name="Header" required class="form-control" />
+            </div>
+            <div class="form-group col-md-6">
+                <label class="text-danger">Yazar* : </label>
+                <input class="form-control" required name="Author" value="@(User.Identity.GetUserFullName())" />
+
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+
+                <label class="text-danger" for="ImageFile">Manşet Foto/Resmi* : </label>
+                <input type="file" required name="ImageFile"
+                       accept=".png,.jpg" />
+            </div>
+            <div class="form-group col-md-6">
+                <label class="" for="Tags">Etiket (Max 5): </label>
+                <div class="col-md-6">
+                    <input name="Tags" id="tagMe" class="form-control" />
+                </div>
+
+            </div>
+        </div>
+        <div class="form-row" style="">
+            <div class="form-group col-md-11">
+                <label class="" for="summernote">İçerik : </label>
+                <div class="summernote"></div>
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="get-started-btn">Kaydet</button>
+        </div>
+    </form>
+
+</section>
+
+
+
+@section scripts{
+    <script src="~/assets/vendor/summernote/summernote.min.js"></script>
+    <script src="~/assets/vendor/summernote/summernote-tr-TR.min.js"></script>
+
+    <script src="~/assets/vendor/vanilla-tag/vanilla-tag.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                lang: 'tr-TR',
+                callbacks: {
+                    onChange: function (contents, $editable) {
+                        $('[name=HtmlBody]').val(contents);
+                        console.log($editable);
+                    }
+                }
+            });
+            var options = {
+                excludeRegex: /_|Enter/,
+                splitChars: [13, ','],
+                maxTagCount: 5,
+                selector: '#tagMe'
+            };
+            vanillaTag.init(options);
+        });
+    </script>
+
+}

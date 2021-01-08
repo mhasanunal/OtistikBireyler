@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewBag.Title = "Database";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool isUserAdmin = User.IsInRole("SUPER") || User.IsInRole("ADMIN");
+    var message = TempData["Result"]?.ToString();
+}
+
+<section class="info">
+
+    @if (isUserAdmin)
+    {
+        <p>DIKKAT: Buradaki kırmızı ile işaretli işlemleri zorunlu olmadıkça yapmayın! </p>
+        <p>
+            Zorunluluk hali durumları:
+
+            <ul>
+                <li>
+                    Site açılırken yavaşlıyorsa
+                </li>
+                <li>
+                    Disk Kullanımımız Hostingden alınan miktara yaklaşmışsa
+                </li>
+
+            </ul>
+        </p>
+    }
+
+    Zaman zaman yedekleme yapmanızı tavsiye ederim (2. Aksiyon ile). Bu süre 6 aydan az olmasın.
+    <br />
+    <br />
+    <div class="section-title">
+        <h4>Veritabanı Yedekleme</h4>
+    </div>
+    <div class="card">
+        <div>
+            <a href="@Url.Action("BackupDB","Settings")" class="btn btn-outline-dark">
+                1. Aksiyon
+            </a>
+            Veritabanının tamamını (tüm içerikler ile beraber) sıkıştırıp size verebilirim.
+            <strong>
+                (Herhangi bir veriyi silmez)
+            </strong>
+
+        </div>
+        <hr />
+        <div>
+            <button type="button" onclick="AskForDate(event,'Lütfen bir Tarih giriniz. Format: gg-aa-yyyy')"
+                    data-href="@Url.Action("BackupDBBeforeDate","Settings")"
+                    class="btn btn-outline-dark">
+                2. Aksiyon
+            </button>
+            Veya 1. Aksiyondaki işlemi belli bir tarihten öncesi için yapabilirim.
+            (Örneğin 01 MART 2021 ve öncesi için)
+        </div>
+        @if (isUserAdmin)
+        {
+            <hr />
+            <div>
+                <button type="button"
+                        onclick="AskForDate(event,'Dikkat! Bu tarihten önceki dosyalar ve veritabanı silinecek!\nLütfen bir Tarih giriniz. Format: gg-aa-yyyy')"
+                        data-href="@Url.Action("BackupDBBeforeDateAndDeleteEntriesAndFolders","Settings")" class="btn btn-outline-danger">
+                    3. Aksiyon
+                </button>
+                Veya 2. Aksiyondaki işlemi yaptıktan sonra dosyaları da silebilirim.
+            </div>
+        }
+    </div>
+
+    <br />
+
+    @if (isUserAdmin)
+    {
+        <div class="section-title">
+            <h4 class="text-danger">Veritabanı Sıfırlama</h4>
+        </div>
+        <div class="card">
+            <div>
+                <a href="@Url.Action("ResetDatabase","Settings")" class="btn btn-outline-dark">4. Aksiyon</a>
+                Veritabanını sadece kullanıcılar kalacak şekilde sıfırlayabilirim.
+                <p>
+                    (Bunun anlamı, kaydedilmiş tüm içerikler ulaşılamaz ancak halen dosya olarak tutulmaya devam eder.)
+                </p>
+            </div>
+            <hr />
+            <div>
+                <a href="@Url.Action("ResetDatabaseAndDeleteFolders","Settings")" class="btn btn-outline-danger">5. Aksiyon</a>
+                Veya 4. Aksiyondaki işleme ek olarak dosyaları da silebilirim.
+            </div>
+        </div>
+
+        <div class="section-title">
+            <h4 class="text-danger">Veritabanı Kurtarma</h4>
+        </div>
+        <div class="card">
+            <div>
+
+                <form action="@Url.Action("UploadBackup","Settings")"
+                      method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <input type="file" accept=".bkp" name="backupFile" />
+                    <button type="button" onclick="AskBeforeSubmit(event,'Yedeklenen Veri geri yüklensin mi?')"
+                            class="btn btn-outline-dark">
+                        6. Aksiyon
+                    </button>
+                </form>
+                    Veritabanını daha önce alınmış bir yedek ile tekrar canlandırabilirim. (<strong>Kullanıcılar değişmez, sadece içerikler geri gelir!</strong>)
+                    <p>
+                        <i>Bu seçenek seçildiğinde mevcut içerik silinmez. Yedekten alınan içerik üzerine eklenir.</i>
+                    </p>
+            </div>
+            @if (isUserAdmin)
+            {
+                <hr />
+                <div>
+                    <form
+                          action="@Url.Action("RestoreFromBackup","Settings")" 
+                          method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="file" accept=".bkp" name="backupFile" />
+                        <button type="button" 
+                                onclick="AskBeforeSubmit(event,'Dikkat! Yedek veritabanı mevcudun üzerine yazılacak.\nMevcut verileriniz kaybolacak, bu işlem geri alınamaz!')"
+                                class="btn btn-outline-danger">
+                            7. Aksiyon
+                        </button>
+                    </form>
+                    Veya 6. Aksiyondaki işleme ek mevcutları silip sadece yedekleri kurabilirim.(<strong>Kullanıcılar yine etkilenmez</strong>)
+                </div>
+            }
+        </div>
+    }
+
+
+</section>
+
+
+@section scripts{
+
+    <script>
+        function isDate(input) {
+            if (!input) {
+                return false;
+            }
+
+            var zones = input.split("-");
+            var day = parseInt(zones[0]);
+            var month = parseInt(zones[1]);
+            var year = parseInt(zones[2]);
+            var a = new Date(year, month - 1, day);
+            var months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+            var result = confirm("Girdilen tarih şu mu?  " + a.getDate() + " " + months[a.getMonth()] + " " + a.getFullYear());
+            if (result === true) {
+                return a;
+            }
+            return false;
+        }
+        function AskBeforeSubmit(event,question) {
+            var response = confirm(question);
+            if (response === true) {
+                var form = $(event.target).parents('form');
+                form.submit();
+                return;
+            }
+            alert("Vazgeçildi.");
+        }
+        function AskForDate(event, question) { // ask date and then document.location=....
+            var result = prompt(question, '@DateTime.Now.ToString("dd-MM-yyyy")');
+            if (result == null) {
+                return;
+            }
+            var date = isDate(result);
+            if (date === false) {
+                result = Ask(event, question);
+                if (result == null) {
+                    return;
+                }
+            }
+            var day = "" + date.getDate();
+            var month = "" + date.getMonth() + 1;
+            var year = "" + date.getFullYear();
+            if (date.getMonth() < 9) {
+                month = "0" + (date.getMonth() + 1);
+            }
+            if (date.getDate() < 10) {
+                day = "0" + date.getDate();
+            }
+            var dateString = year + "-" + month + "-" + day + "T00:00:00";
+            var root = location.href.replace(location.pathname, "");
+            document.location = root + event.target.dataset["href"] + "?date=" + encodeURIComponent(dateString);
+        }
+
+        var message = "@(Html.Raw(message))";
+
+        $(function () {
+
+            if (message) {
+                alert(message);
+            }
+        });
+
+    </script>
+
+}

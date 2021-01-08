@@ -1,0 +1,67 @@
+﻿@model IndexViewModel
+
+@{
+    ViewBag.Title = "Ana Sayfa";
+
+
+}
+<link href="~/assets/vendor/eislide/style.css" rel="stylesheet" />
+
+
+<section class="info">
+    <div class="">
+        <div class="col-md-12">
+            <h4>
+                Öne çıkan Etkinlikler/Haberler <small class="badge">
+                    <a href="@Url.Action("ListArticle","Content")">(Tamamı için tıklayınız.)</a>
+                </small>
+            </h4><br />
+        </div>
+        <div class="row" style="justify-content:center;">
+
+            @foreach (var item in Model.Events)
+            {
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="/@(item.GenerateRelativePath()+"\\"+item.ImageFile)" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Header</h5>
+                        @foreach (var tag in item.Tags.Split('_'))
+                        {
+
+                            <a class="badge badge-info" href="@Url.Action("ListArticle","Content")?tags[0]=@tag" title="Bu kategoride olanları listele">
+                                @tag
+                            </a>
+
+                        }
+                        <p class="card-text">@item.Describer</p>
+                        <a href="@Url.Action("ReadArticle","Content",new { id=item.CID})" class="get-started-btn">Detaylı Oku</a>
+                    </div>
+                    <div class="card-footer">
+                        <span class="text-muted">
+
+                            <i class="icofont-calendar"></i>
+                            @item.On.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                        </span>
+                        <span class="float-right author">
+
+                            <a href="@Url.Action("ListArticle","Content",new { author=item.Author})"
+                               title="Diğer katkıları">
+                                <span class="icofont-user"></span>@item.Author
+
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>
+@*<br />
+<section class="info">
+    <div>
+        <div class="row">
+            Falanca filanca
+        </div>
+    </div>
+</section>*@

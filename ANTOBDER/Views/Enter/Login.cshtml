@@ -1,0 +1,44 @@
+﻿@model ANTOBDER.Models.LoginInfo
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+    <h2>Login</h2>
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Kullanıcı Girişi</h4>
+        <hr />
+        <em>
+            @Html.ValidationSummary()
+        </em>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Kullanıcı Adı</label>
+            <div class="col-md-6">
+                <input class="form-control" name="username" value="" autocomplete="off" autofocus />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Parola</label>
+            <div class="col-md-6">
+                <input class="form-control" name="password" type="password" value="" />
+            </div>
+        </div>
+        <input class="d-none" hidden name="ReturnUrl" value="@TempData["ReturnUrl"]" />
+        <div class="form-group">
+            <label class="">Geri döndüğümde beni hatırla</label>
+            <input class="" type="checkbox" value="false" />
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Giriş Yap" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}

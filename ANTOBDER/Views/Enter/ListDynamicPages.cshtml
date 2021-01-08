@@ -1,0 +1,46 @@
+﻿@model IEnumerable<string>
+@{
+    ViewBag.Title = "ListDynamicPages";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<style>
+    [disabled] {
+        cursor: not-allowed;
+    }
+</style>
+<hr />
+<section class="info">
+
+    <div class="section-title">
+        <h4>Dinamik Sayfalar: <small>Toplam @Model.Count()</small></h4>
+    </div>
+    <p>Dinamik Sayfalar Sitenin <strong>Ana Menü</strong>sünde bulunan sayfalardır. Dinamik olması sayesinde kendiniz gereken değişikliği yapabilirsiniz.</p>
+    <div>
+        <button disabled class="btn btn-outline-success">Yeni Ekle</button>
+    </div>
+
+    <table class="table table-light table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>Sayfa Adı</th>
+                <th>Komutlar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@(item)</td>
+                    <td>
+                        <button disabled href="@Url.Action("Delete","Pages",new { id=item.Replace(".html","")})" class="btn btn-outline-danger">Sil</button>
+                        <a href="@Url.Action("Edit","Pages",new { id=item.Replace(".html","")})" class="btn btn-outline-info">Düzenle</a>
+                        <button disabled class="btn btn-outline-primary">Yeniden Adlandır</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</section>

@@ -1,0 +1,75 @@
+﻿@model Tuple<string, string>
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var message = TempData["Message"]?.ToString();
+    var hasMessage = !string.IsNullOrEmpty(message);
+}
+
+<link href="~/assets/vendor/summernote/summernote.min.css" rel="stylesheet" />
+<section class="info">
+    <div class="section-title">
+        <div class="float-left">
+            <a class="btn btn-outline-secondary" href="@Url.Action("ListDynamicPages","Enter")">Dinamik Sayfa Listesine Dön</a>
+        </div>
+        <h4>
+            @(Model.Item1).html
+            <small class="@(hasMessage?"text-success":"text-danger")">
+                @if (!hasMessage)
+                {
+                    <text>
+                        Sayfasını değiştiriyorsunuz...
+                    </text>
+                }
+                else
+                {
+                    <text>
+                        @message
+                    </text>
+                }
+            </small>
+        </h4>
+    </div>
+    <div>
+        <form action="@Url.Action("Edit","Pages",new { id=Model.Item1})" method="post">
+
+            @Html.AntiForgeryToken()
+            <input hidden class="d-none" name="HtmlBody" />
+            <button type="button" onclick="Ask('Yaptığınız değişiklikler kaydedilecek, devam edilsin mi?')" class="btn btn-outline-info">Kaydet</button>
+        </form>
+    </div>
+    <div>
+        <div class="summernote">
+            @Html.Raw(Model.Item2)
+
+        </div>
+    </div>
+</section>
+
+
+@section scripts{
+    <script src="~/assets/vendor/summernote/summernote.min.js"></script>
+    <script src="~/assets/vendor/summernote/summernote-tr-TR.min.js"></script>
+
+    <script>
+        function Ask(question) {
+            var result = confirm(question);
+            if (result) {
+                $('form').submit();
+            }
+        }
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                lang: 'tr-TR',
+                callbacks: {
+                    onChange: function (contents, $editable) {
+                        $('[name=HtmlBody]').val(contents);
+                        console.log($editable);
+                    }
+                }
+            });
+
+        });
+    </script>
+
+}

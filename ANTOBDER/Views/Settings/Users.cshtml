@@ -1,0 +1,133 @@
+﻿@model IEnumerable<ANTOBDER.Models.User>
+
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var userIsAdmin = User.IsInRole("ADMIN") || User.IsInRole("SUPER");
+    var message = TempData["Message"]?.ToString();
+    var error = TempData["Error"]?.ToString();
+}
+
+<section class="info">
+    <div class="section-title">
+        <h3>Kullanıcı Listesi</h3>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <p class="text-success">@message</p>
+        }
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <p class="text-danger">@error</p>
+        }
+    </div>
+    <div>
+        @if (userIsAdmin)
+        {
+            <p>
+                Buradan parolası unutulan hesaplar kurtarılabilir.
+            </p>
+        }
+
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <th>
+                Kullanıcı Adı
+            </th>
+            <th>
+                Rol
+            </th>
+            <th>
+                Tam Adı
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fullname)
+                </td>
+
+                <td>
+                    @if (userIsAdmin)
+                    {
+                        <form method="post" action="@Url.Action("ChangeUserPassword","Settings",new { id=item.Id})">
+                            @Html.AntiForgeryToken()
+                            <input name="ChangedPassword" value="" hidden class="d-none" />
+                            <button type="button" title="Parola belirlemek için tıklayın"
+                                    onclick="AskForNewPassword(event,'Yeni Parola Girin:')"
+                                    class="btn btn-outline-dark">
+                                Parola Sıfırla
+                            </button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <div class="card">
+        <div>
+            <div class="col-md-6">
+
+                <form autocomplete="off" action="@Url.Action("CreateUser","Settings")">
+                    <h3>Yeni Kayıt</h3>
+                    @Html.AntiForgeryToken()
+                    <label>Kullanıcı Adı</label>
+                    <input name="username" autocomplete="off"  required placeholder="Kullanıcı Adı" class="form-control" />
+                    <label>Tam Adı</label>
+                    <input name="Fullname" autocomplete="off"  required placeholder="Tam Adı" class="form-control" />
+                    <label>Parolası</label>
+                    <input name="password" autocomplete="off"  required type="password" placeholder="Parola" class="form-control" />
+                    <label>Rolü</label>
+                    <select name="Role" class="form-control" required>
+                        <option disabled selected value> --- Lütfen Rol Seçiniz ---</option>
+                        <option value="USER">Normal Kullanıcı</option>
+                        @if (User.IsInRole("ADMIN") || User.IsInRole("SUPER"))
+                        {
+                            <option value="ADMIN">Yönetici Kullanıcı</option>
+                            if (User.IsInRole("SUPER"))
+                            {
+                                <option value="SUPER">
+                                    Programcı Kullanıcı
+                                </option>
+                            }
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-outline-info">Yeni Kullanıcı Yarat</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts{
+
+    <script>
+
+
+        function AskForNewPassword(event, question) {
+            var input = prompt(question);
+            if (input == null) {
+                alert("Vazgeçildi!");
+                return;
+            }
+            $(event.target).siblings('[name="ChangedPassword"]').val(input);
+            var form = $(event.target).parents('form');
+            form.submit();
+        }
+
+    </script>
+
+}

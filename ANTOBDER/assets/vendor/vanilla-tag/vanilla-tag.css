@@ -1,0 +1,107 @@
+.d-block{
+    display: block;
+}
+.tag_area{
+    background-color:white;
+    margin:0.5em;
+    padding:0.25em;
+    width:-webkit-fill-available;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tag_area>em{
+    margin-bottom:1em;
+}
+
+.tag_area.warning {
+    outline: solid 1px red;
+    background: none;
+}
+.tag_list{
+    padding-left:0.5em;
+    display: inline-flex;
+}
+
+.tag_area > .tagging_input:focus {
+    outline: none;
+}
+.tag_area:focus{
+    box-shadow: 3px 3px 9px 1px rgb(146, 146, 146);
+}
+.tag_area > .tagging_input {
+    height: 2em;
+    overflow: hidden;
+    border: none !important;
+    display: inline-flex !important;
+    resize: none !important;
+    box-shadow: none !important;
+    font:inherit;
+    font-size: inherit;
+    padding:unset !important;
+    white-space: nowrap !important;
+    vertical-align: text-top !important;
+}
+
+span.tag {
+    background-color: #2184be;
+    color: white;
+    border-radius: 5px;
+    padding: .25em;
+    margin-right: .5em;
+    cursor: pointer;
+    padding-left:.5em;
+}
+
+span.tag.warning {
+    background-color: olive;
+}
+
+span.tag > .fa-times:hover {
+    color: gray;
+}
+
+span.tag > .fa-times {
+    padding-right: 1px;
+    color: #b9b9b9;
+    padding-left: 5px;
+}
+.fa-times::before{
+    content:"x"
+}
+.d-none{
+    display: none;
+}
+ul.tag_autocomplete{
+    width: 100%;
+    background-color: #efefef;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px 0 #666;
+    overflow: hidden;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    position: relative;
+    top: 0;
+    z-index: 100;
+    cursor: default;
+}
+
+ul.tag_autocomplete>li{
+    text-indent: 8px;
+    position: relative;
+    margin: 0;
+    padding: 3px 1em 3px .4em;
+    cursor: pointer;
+    min-height: 0;
+
+}
+
+    ul.tag_autocomplete > li.active {
+        color: white;
+        background-color: #0684d9;
+    }
+    ul.tag_autocomplete > li:hover {
+        color: white;
+        background-color: #015994;
+    }

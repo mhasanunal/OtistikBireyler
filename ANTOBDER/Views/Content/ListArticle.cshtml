@@ -1,0 +1,58 @@
+﻿@model Tuple<string, IEnumerable<ANTOBDER.Models.BaseContent>>
+
+@{
+    ViewBag.Title = "ListArticle";
+}
+
+<section class="info">
+    <div class="section-title">
+       Toplam @Model.Item2.Count() içerik Listeleniyor.
+    </div>
+    <div class="text-muted">
+        @if (Model.Item1 != null)
+        {
+            <text>
+                Arama Kriteri : <br />
+                @Model.Item1
+            </text>
+        }
+    </div>
+    <div class="row" style="justify-content:center;">
+
+        @foreach (var item in Model.Item2)
+        {
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="/@(item.GenerateRelativePath()+"\\"+item.ImageFile)" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Header</h5>
+                    @foreach (var tag in item.Tags.Split('_'))
+                    {
+
+                        <a class="badge badge-info" href="@Url.Action("ListArticle","Content")?tags[0]=@tag" title="Bu kategoride olanları listele">
+                            @tag
+                        </a>
+
+                    }
+                    <p class="card-text">@item.Describer</p>
+                    <a href="@Url.Action("ReadArticle","Content",new { id=item.CID})" class="get-started-btn">Detaylı Oku</a>
+                </div>
+                <div class="card-footer">
+                    <span class="text-muted">
+
+                        <i class="icofont-calendar"></i>
+                        @item.On.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                    </span>
+                    <span class="float-right author">
+
+                        <a href="@Url.Action("ListArticle","Content",new { author=item.Author})"
+                           title="Diğer katkıları">
+                            <span class="icofont-user"></span>@item.Author
+
+                        </a>
+                    </span>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>
