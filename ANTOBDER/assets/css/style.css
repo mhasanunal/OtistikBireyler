@@ -1403,7 +1403,15 @@ section {
     margin-left: auto;
     width: 85%;
 }
-
+@media (max-width:992px) {
+    .antobder-center {
+        padding-right: unset!important;
+        padding-left: unset!important;
+        margin-right: unset!important;
+        margin-left: unset!important;
+        width: unset!important;
+    }
+    }
 body.antobder-center {
     box-shadow: 0 0 10px 0 rgba(0,0,0,.5);
 }
