@@ -1565,3 +1565,33 @@ article .article-header {
     .card-body {
         padding: .5em;
     }
+
+
+
+body.admin > #main {
+    padding: 15em;
+}
+body.admin > #footer{
+    margin-top: -50px;
+}
+
+body.admin > #header {
+    top: unset !important;
+}
+
+
+@media (max-width:992px){
+
+    body.admin > #main {
+        padding: 10px;
+    }
+
+    body.admin > #footer {
+        margin-top: -50px;
+    }
+
+    body.admin > #header {
+        top: unset !important;
+    }
+
+}

@@ -26,30 +26,14 @@
 
     <!-- Template Main CSS File -->
     <link href="~/assets/css/style.css" rel="stylesheet">
-    <style>
-        #header {
-            top: unset !important;
-        }
-
-        #main {
-            padding: 15em;
-        }
-
-        #footer {
-            /*position: absolute !important;
-            left: 0px;
-            right: 0px;
-            bottom: 0px;*/
-            margin-top: -50px;
-        }
-    </style>
+    
 
 </head>
 
-<body class="antobder-center">
+<body class="antobder-center admin">
     @Html.Partial("_AdminHeader")
 
-    <main id="main" style="padding-top:1em;">
+    <main id="main" style="padding-top:3em;">
                     @RenderBody()
         
     </main><!-- End #main -->
