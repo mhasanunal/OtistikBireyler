@@ -23,7 +23,7 @@ namespace ANTOBDER.Controllers
             var content = new BaseContent()
             {
                 CID = model.CID,
-                Author = model.Author,
+                Author = model.Author.BuildUpAuthorText(),
                 Describer = _Extentions.RemoveUnwantedTags(model.HTMLBody, 65),
                 Header = model.Header ?? "İçerik Başlığı",
                 ImageFile = "header" + Path.GetExtension(model.ImageFile.FileName),
@@ -82,63 +82,57 @@ namespace ANTOBDER.Controllers
             //sanity check
             return View(content);
         }
-        public ActionResult ListArticle(string author, string[] tags,
-            bool listEditorialsOnly = false,
-            bool? listAll = null)
-        {
-            IEnumerable<BaseContent> list;
-            string filter = null;
 
-            Func<BaseContent, bool> func = c =>
-                 (c.IsEditorial && listEditorialsOnly == true)
-                 ||
-                 (listAll == true && !listEditorialsOnly)
-                 ||
-                 (!c.IsEditorial && listAll != true && listEditorialsOnly != true)
-                 ||
-                 (!string.IsNullOrEmpty(author))
-                 ;
+
+        public ActionResult ListArticle(
+            string author,
+            string tags,
+            bool listAll = false)
+        {
+            List<BaseContent> result;
+            string filter = null;
+            var authorFunc = funcByAuthor(author, out string authorFilter);
+            var tagsFunc = funcByTags(tags, out string tagFilter);
             using (var db = new ContextBase())
             {
-                if (listEditorialsOnly == true)
+                var filtered = db.Contents.Where(content => authorFunc(content) && tagsFunc(content));
+                if (!listAll)
                 {
-                    filter = "Sadece \"Yazı\" Türündeki İçerikler";
+                    filtered = filtered.Where(content => !content.IsEditorial);
                 }
-
-
-                list = db.Contents
-                    .Where(func);
-                if (!string.IsNullOrEmpty(author))
-                {
-                    filter = $"Yazar: {author}";
-                    list = list.Where(c => c.Author == author);
-                }
-                else if (tags != null && tags.Any() && !string.IsNullOrEmpty(tags.First()))
-                {
-                    var first = tags.First();
-                    filter = $"Etiket(ler): " + first;
-                    list = list.Where(c =>
-                    c.Tags.StartsWith(first + "_")
-                    || c.Tags.EndsWith("_" + first)
-                    || c.Tags.Contains("_" + first + "_"));
-                    for (int i = 1; i < tags.Length; i++)
-                    {
-                        list.Union(
-                            db.Contents.Where(func)
-                            .Where(c =>
-                             c.Tags.StartsWith(tags[i] + "_")
-                        || c.Tags.EndsWith("_" + tags[i])
-                        || c.Tags.Contains("_" + tags[i] + "_"))
-                            );
-                        filter += "," + tags[i];
-                    }
-                }
-                list = list.Take(100).ToList();
+                result = filtered.ToList();
             }
-            return View(new Tuple<string, IEnumerable<BaseContent>>
-                (filter, list)
-                );
+            if (!string.IsNullOrEmpty(authorFilter))
+            {
+                filter = authorFilter;
+            }
+            if (!string.IsNullOrEmpty(tagFilter))
+            {
+                filter = string.IsNullOrEmpty(filter) ? tagFilter : filter + ";" + tagFilter;
+            }
+            return View(new Tuple<string, IEnumerable<BaseContent>>(filter, result));
         }
+
+        private Func<BaseContent, bool> funcByTags(string tags, out string filter)
+        {
+            filter = string.IsNullOrEmpty(tags) ? null : tags.Split('_').Aggregate("Etiketler: ", (seed, next) => { return seed + next + ", "; });
+            return content =>
+            ((!string.IsNullOrEmpty(tags)) && tags.Split('_').Any(
+                tag =>
+                content.Tags.StartsWith(tag)
+                ||
+                content.Tags.Contains("_" + tag + "_")
+                ||
+                content.Tags.EndsWith(tag)))
+                || string.IsNullOrEmpty(tags);
+        }
+
+        private Func<BaseContent, bool> funcByAuthor(string author, out string filter)
+        {
+            filter = string.IsNullOrEmpty(author) ? null : "Yazar: " + author;
+            return c => (!string.IsNullOrEmpty(author) && c.Author == author) || string.IsNullOrEmpty(author);
+        }
+
         [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "ADMIN,SUPER")]
         public ActionResult Delete(string id)
         {
@@ -187,7 +181,14 @@ namespace ANTOBDER.Controllers
         string SaveFiles(ContentCreateModel model)
         {
             var path = _GenerateDir(model.CID);
-            System.IO.File.WriteAllText(path + "\\Index.html", model.HTMLBody);
+            if (!string.IsNullOrEmpty(path))
+            {
+                System.IO.File.WriteAllText(path + "\\Index.html", model.HTMLBody);
+            }
+            else
+            {
+                throw new Exception("Dosya yolu yazılamadı!");
+            }
 
             var fileStream = System.IO.File.Create(path + "\\header" + Path.GetExtension(model.ImageFile.FileName));
             model.ImageFile.InputStream.Seek(0, SeekOrigin.Begin);

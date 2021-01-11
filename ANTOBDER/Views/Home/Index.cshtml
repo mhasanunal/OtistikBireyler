@@ -25,16 +25,19 @@
                     <img class="card-img-top" src="/@(item.GenerateRelativePath()+"\\"+item.ImageFile)" alt="Card image cap">
                     <div class="card-body">
                         <h5 class="card-title">@item.Header</h5>
-                        @foreach (var tag in item.Tags.Split('_'))
+                        @if (item.Tags != null && item.Tags.Any())
                         {
+                            foreach (var tag in item.Tags.Split('_'))
+                            {
 
-                            <a class="badge badge-info" href="@Url.Action("ListArticle","Content")?tags[0]=@tag" title="Bu kategoride olanları listele">
-                                @tag
-                            </a>
+                                <a class="badge badge-info" href="@Url.Action("ListArticlev1","Content")?tags[0]=@tag" title="Bu kategoride olanları listele">
+                                    @tag
+                                </a>
 
+                            }
                         }
                         <p class="card-text">@item.Describer</p>
-                        <a href="@Url.Action("ReadArticle","Content",new { id=item.CID})" class="get-started-btn">Detaylı Oku</a>
+                        <a href="@Url.Action("ReadArticlev1","Content",new { id=item.CID})" class="get-started-btn">Detaylı Oku</a>
                     </div>
                     <div class="card-footer">
                         <span class="text-muted">
@@ -44,7 +47,7 @@
                         </span>
                         <span class="float-right author">
 
-                            <a href="@Url.Action("ListArticle","Content",new { author=item.Author})"
+                            <a href="@Url.Action("ListArticlev1","Content",new { author=item.Author})"
                                title="Diğer katkıları">
                                 <span class="icofont-user"></span>@item.Author
 
@@ -58,10 +61,10 @@
     </div>
 </section>
 @*<br />
-<section class="info">
-    <div>
-        <div class="row">
-            Falanca filanca
+    <section class="info">
+        <div>
+            <div class="row">
+                Falanca filanca
+            </div>
         </div>
-    </div>
-</section>*@
+    </section>*@

@@ -1,9 +1,4 @@
-﻿/**
-* Template Name: Green - v2.3.0
-* Template URL: https://bootstrapmade.com/green-free-one-page-bootstrap-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
+﻿
 
 /*--------------------------------------------------------------
 # General
@@ -1393,7 +1388,11 @@ section {
     /* ... */
 
 }
-
+/*
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                        CUSTOM STYLES 
+    üüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüüü
+*/
 
 
 .antobder-center {
@@ -1454,30 +1453,7 @@ body.antobder-center {
         }
 
 }
-/*
-#topbar .left-logo{
-    position:absolute;
-    left:0px;
-    padding-left:1em;
-    padding-right:1em;
-    max-width:12em;
-    height:auto;
-}
-#topbar .right-logo {
-    position: absolute;
-    right: 0px;
-    padding-left: 1em;
-    padding-right: 1em;
-    max-width: 28em;
-    height:auto;
-}
-*//*
-#topbar #orgname {
-    left: 14.25%;
-    width: 66.75%;
-    height: 15em;
-    position: absolute;
-}*/
+
 #topbar #orgname h1{
     text-shadow: rgb(71, 71, 71) 3px 3px 2px, rgba(206, 89, 55, 0) 2px 2px 2px;
     color: rgb(92, 184, 116);

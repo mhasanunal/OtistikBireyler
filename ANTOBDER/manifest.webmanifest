@@ -1,0 +1,21 @@
+{
+  "short_name": "Antobder",
+  "name": "Antalya Otistik Bireyler Spor Kulübü",
+  "description": "Antalya'da otizm konusunda farkındalık yaratmak ve otistik bireylerin rehabilitasyonu",
+  "icons": [
+    {
+      "src": "/assests/img/antobder-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assests/img/antobder-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3367D6"
+}

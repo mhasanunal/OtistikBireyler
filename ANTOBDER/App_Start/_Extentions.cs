@@ -161,6 +161,34 @@ namespace ANTOBDER
             return SubDirectoryFor(isEditorial, year) + "\\" + month.ToString("0#");
         }
 
+        public static string BuildUpAuthorText(this string author)
+        {
+            StringBuilder sb = new StringBuilder();
+            bool detectedWhiteSpace = false;
+            int numberOfWords = 0;
+
+            foreach (var item in author)
+            {
+                if (char.IsWhiteSpace(item))
+                {
+                    if (!detectedWhiteSpace)
+                        detectedWhiteSpace = true;
+                    else
+                        continue;
+                }
+                else if (!char.IsLetter(item))
+                {
+                    continue;
+                }
+                if (detectedWhiteSpace && !char.IsWhiteSpace(item))
+                {
+                    detectedWhiteSpace = false;
+                }
+                sb.Append(item);
+
+            }
+            return _Extentions.ToTitleCase(sb.ToString().Trim());
+        }
         public static void CreateRootPaths()
         {
             if (!Directory.Exists(_Extentions.EventsRootPath()))

@@ -6,14 +6,27 @@
 
 <section class="info">
     <div class="section-title">
-       Toplam @Model.Item2.Count() içerik Listeleniyor.
+        Toplam @Model.Item2.Count() içerik Listeleniyor.
     </div>
     <div class="text-muted">
         @if (Model.Item1 != null)
         {
             <text>
                 Arama Kriteri : <br />
-                @Model.Item1
+                @if (@Model.Item1.Contains(';'))
+                {
+                    var filterArray = @Model.Item1.Split(';');
+                    <text>
+                        @filterArray[0]<br />
+                        @filterArray[1]
+                    </text>
+                }
+                else
+                {
+                    <text>
+                        @Model.Item1
+                    </text>
+                }
             </text>
         }
     </div>

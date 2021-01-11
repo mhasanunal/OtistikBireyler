@@ -192,7 +192,6 @@
     <Content Include="pages\Spor Faaliyetleri.html" />
     <Content Include="pages\Yönetim Kurulu.html" />
     <Content Include="pages\Ülkemizde Otizim ve Kurumları.html" />
-    <Content Include="assets\css\style - Copy.css" />
     <Content Include="assets\css\style.css" />
     <Content Include="assets\img\about.jpg" />
     <Content Include="assets\img\favicon.ico" />
