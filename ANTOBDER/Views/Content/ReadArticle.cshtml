@@ -7,18 +7,20 @@
     section.info {
         height: 100%;
     }
-</style>
 
+    @@media(max-width:992px) {
+        section.info {
+            height: unset !important;
+        }
+    }
+</style>
+<link href="~/assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+<link href="~/assets/vendor/owl.carousel/assets/owl.theme.default.css" rel="stylesheet" />
 <section class="info">
     <div class="section-title">
-        <div class="section-bg">
-            <h3>
-                @Model.Header
-            </h3>
-
-        </div>
+        <h1>@Model.Header</h1>
         <div class="float-right">
-            @if (User.IsInRole("SUPER"))
+            @if (User.IsInRole("ADMIN") || User.IsInRole("SUPER"))
             {
                 <form id="deleteForm" action="@Url.Action("Delete","Content",new { id=Model.CID})" method="post">
                     @Html.AntiForgeryToken()
@@ -28,22 +30,123 @@
         </div>
 
     </div>
-    <div class="container">
+
+    <br />
+    <p>
+        <span class="icofont icofont-calendar"></span>
+        @Model.On.ToString("dd MMMM yyyy HH:mm")
+        <br />
+        <div>
+            <strong>Yazar :&nbsp;</strong>
+            <a href="@Url.Action("ListArticle","Content",new { author=Model.Author.BuildUpAuthorText(),ListAll=true})"
+               title="Diğer katkıları">
+                <span class="icofont-user"></span>@Model.Author
+
+            </a>
+            <br />
+            <div class="float-left">
+
+                @if (!string.IsNullOrEmpty(Model.Tags))
+                {
+                    <strong>Etiketler :&nbsp;</strong>
+                    <div class="float-right">
+                        @foreach (var tag in Model.Tags.Split('_'))
+                        {
+
+                            <a class="badge badge-info" href="@Url.Action("ListArticle","Content",new { Tags=tag,ListAll=true})" title="Bu kategoride olanları listele">
+                                @tag
+                            </a>
+
+                        }
+                    </div>
+                }
+            </div>
+            <div class="float-right">
+                <div style="font-size: 1.75rem;-moz-user-select: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;-o-user-select: none;"
+                     unselectable="on"
+                     onselectstart="return false;"
+                     onmousedown="return false;">
+                    <span contenteditable="false" class="text-size-changer" id="decreasetext" style="font-size:0.75em;">A-</span>
+                    &nbsp;
+                    <span contenteditable="false" class="text-size-changer" id="increasetext">A+</span>
+                </div>
+            </div>
+            <br />
+        </div>
+    </p>
+    <hr />
+    <div style="text-align: center;overflow-y: hidden;
+">
+        <img style="max-height:18em;"
+             loading="lazy" src="~/@(Model.GenerateRelativePath()+"\\"+@Model.ImageFile)" />
+
+    </div>
+    <hr />
+    <div id="content">
         @Html.Raw(System.IO.File.ReadAllText(Model.Path + "\\" + Model.HtmlFile))
     </div>
-</section>
+    <div class="justify-content-center">
+        @if (Model.HasImageGallery())
+        {
+            <div id="myCarousel" class="owl-carousel owl-theme">
 
+                @foreach (var item in Model.IterateImageGallery())
+                {
+                    <div class="item" style="text-align:-webkit-center">
+                        <img style="max-height:25em;width:auto;" loading="lazy" src="~/@(Model.GenerateRelativePath()+item)" />
+                    </div>
+                }
+
+            </div>
+        }
+    </div>
+    <hr />
+</section>
+&#x27;
 
 @section scripts{
 
+    <script src="~/assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+
+    @if (User.IsInRole("ADMIN") || User.IsInRole("SUPER"))
+    {
+        <script>
+            function Ask(question) {
+                var result = confirm(question);
+                if (result) {
+                    $('#deleteForm').submit();
+                }
+            }
+        </script>
+    }
     <script>
 
-        function Ask(question) {
-            var result = confirm(question);
-            if (result) {
-                $('#deleteForm').submit();
-            }
-        }
+        $('#increasetext').click(function () {
+            curSize = parseInt($('#content').css('font-size')) + 2;
+            if (curSize <= 32)
+                $('#content').css('font-size', curSize);
+        });
+
+        $('#resettext').click(function () {
+            if (curSize != 18)
+                $('#content').css('font-size', 18);
+        });
+
+        $('#decreasetext').click(function () {
+            curSize = parseInt($('#content').css('font-size')) - 2;
+            if (curSize >= 14)
+                $('#content').css('font-size', curSize);
+        });
+
+        $(function () {
+
+            $('#myCarousel').owlCarousel({
+                items: 1,
+                navText: ['Önceki','Sonraki'],
+                    nav: true
+            });
+
+        });
 
     </script>
 

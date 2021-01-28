@@ -1,0 +1,2 @@
+CID;Path;Author;On;Tags;ImageFile;Describer;Header;HtmlFile;
+2021-01-10-133003-f;h:\root\home\testantobder-001\www\antobder\articles\events\2021\01\10-133003;Perihan     Şahin Bal;2021-01-10 13:30;;header.jpg;  Kulübümüz  sporcularından Medina SADIKOVA ve Ege Bora;SPORCULARIMIZ TÖSSFED MASA TENİSİ YARIŞMALARINDA;Index.html;

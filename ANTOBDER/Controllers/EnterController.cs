@@ -23,11 +23,11 @@ namespace ANTOBDER.Controllers
         {
             return View();
         }
-        [Authorize]
-        public ActionResult AddContent()
-        {
-            return View();
-        }
+        //[Authorize]
+        //public ActionResult AddContent()
+        //{
+        //    return View();
+        //}
         public ActionResult ListDynamicPages()
         {
             var list = _Extentions.GetDynamicPages().Select(p => Path.GetFileName(p));

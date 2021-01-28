@@ -163,7 +163,16 @@ class TagContainer {
             this.TagArea.tagRemoved(new Tag(tag));
         }
     }
-
+    clear() {
+        var currentCount = this.getCount();
+        var tagsToBeRemoved = this.Tags.map(c => c.Name);
+        for (var i = 0; i <= currentCount; i++) {
+            if (this.Tags.length == 0) {
+                break;
+            }
+            this.removeTag(tagsToBeRemoved[i]);
+        }
+    }
 }
 class ErrorMessage {
     constructor(type, message, forElement) {

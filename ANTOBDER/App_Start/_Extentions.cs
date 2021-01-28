@@ -163,10 +163,12 @@ namespace ANTOBDER
 
         public static string BuildUpAuthorText(this string author)
         {
+            if (string.IsNullOrEmpty(author))
+            {
+                return null;
+            }
             StringBuilder sb = new StringBuilder();
             bool detectedWhiteSpace = false;
-            int numberOfWords = 0;
-
             foreach (var item in author)
             {
                 if (char.IsWhiteSpace(item))
@@ -188,6 +190,40 @@ namespace ANTOBDER
 
             }
             return _Extentions.ToTitleCase(sb.ToString().Trim());
+        }
+
+        public static string CheckForTags(this string tags)
+        {
+            if (string.IsNullOrEmpty(tags))
+            {
+                return null;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            bool detectedWhiteSpace = false;
+            foreach (var tag in tags.Split('_'))
+            {
+                foreach (var item in tag)
+                {
+                    if (char.IsWhiteSpace(item))
+                    {
+                        if (!detectedWhiteSpace)
+                            detectedWhiteSpace = true;
+                        else
+                            continue;
+                    }
+
+
+                    if (detectedWhiteSpace && !char.IsWhiteSpace(item))
+                    {
+                        detectedWhiteSpace = false;
+                    }
+                    sb.Append(item.ToString().ToLower(new CultureInfo("tr-TR")));
+
+                }
+                sb.Append('_');
+            }
+            return sb.ToString().Substring(0, sb.Length - 1);
         }
         public static void CreateRootPaths()
         {
@@ -247,6 +283,9 @@ namespace ANTOBDER
         }
         public const string EditorialConstant = "e";
         public const string EventConstant = "f";
+
+        public static string GalleryPathName = "gallery";
+
         public static string CreateID(bool isEditorial)
         {
             return $"{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}-{(isEditorial ? EditorialConstant : EventConstant)}";

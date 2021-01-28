@@ -28,13 +28,46 @@
     <br />
     <form method="post" action="@Url.Action("Create","Content")" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
+        <input hidden class="d-none" value="Index.html" name="HtmlFileName"/>
+        <input hidden class="d-none" value="header" name="HeaderImageFileName"/>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label class="text-danger" for="CID">İçerik Tipi* : </label>
-                <select name="CID" class="form-control" required contextmenu="">
+                <select name="CID" class="form-control" onchange="replaceTags(event)" required contextmenu="">
                     <option disabled selected value> --- Lütfen Seçiniz ---</option>
-                    <option value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))">Etkinlik/Haber Ekle</option>
-                    <option value="@(ANTOBDER._Extentions.CreateID(isEditorial:true))">Yazı Ekle</option>
+                    <optgroup label="Bizim Otizim Köyü">
+                        <option data-tags="bizim otizim köyü,eğitim,faaliyet"
+                                value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))">
+                            Eğitim Faaliyeti [Bizim Otizim Köyü]
+                        </option>
+                        <option data-tags="bizim otizim köyü,spor,faaliyet"
+                                value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))">
+                            Spor Faaliyeti [Bizim Otizim Köyü]
+                        </option>
+                        <option data-tags="bizim otizim köyü,kültürel ve sosyal,faaliyet"
+                                value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))">
+                            Kültürel ve Sosyal Faaliyet [Bizim Otizim Köyü]
+                        </option>
+                        <option data-tags="bizim otizim köyü,faaliyet"
+                                value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))">
+                            Etkinlik [Bizim Otizim Köyü]
+                        </option>
+                    </optgroup>
+                    <option disabled value>---------------</option>
+                    <option data-tags="antobder,etkinlik"
+                            value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))"
+                            >Etkinlik [Dernek] </option>
+                    <option data-tags="antobder,duyuru"
+                            value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))"
+                            >Duyuru [Dernek] </option>
+                    <option data-tags="antobder,haber"
+                            value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))"
+                            >Haber [Dernek] </option>
+                    <option data-tags="antobder,basında biz"
+                            value="@(ANTOBDER._Extentions.CreateID(isEditorial:false))"
+                            >Basında Biz [Dernek] </option>
+                    <option disabled value>---------------</option>
+                    <option data-tags="yazı" value="@(ANTOBDER._Extentions.CreateID(isEditorial:true))">Yazı Ekle</option>
                 </select>
             </div>
             <div class="form-group col-md-6">
@@ -66,16 +99,23 @@
                        accept=".png,.jpg" />
             </div>
             <div class="form-group col-md-6">
-                <label class="" for="Tags">Etiket (Max 5): </label>
-                <div class="col-md-6">
-                    <input name="Tags" id="tagMe" class="form-control" />
-                </div>
+                <label class="" for="Tags">Etiket (Max 5): <span class="text-danger">Etiketler yaratılan içerikleri kategorize etmeye yarar</span> </label>
+                <input name="Tags" id="tagMe" class="form-control" />
 
             </div>
         </div>
+        <hr />
+        <div class="form-row">
+            <div class="col-md-12">
+                Fotoğraf Galerisi: (Birden fazla seçebilirsiniz veya hiç koymayabilirsiniz)
+                <input type="file" id="ImageGallery" name="ImageGallery" multiple  
+                       accept=".png,.jpg"/>
+            </div>
+        </div>
+        <hr />
         <div class="form-row" style="">
             <div class="form-group col-md-11">
-                <label class="" for="summernote">İçerik : </label>
+                <h3 class="text-danger">İçerik : </h3>
                 <div class="summernote"></div>
             </div>
         </div>
@@ -92,8 +132,26 @@
     <script src="~/assets/vendor/summernote/summernote.min.js"></script>
     <script src="~/assets/vendor/summernote/summernote-tr-TR.min.js"></script>
 
-    <script src="~/assets/vendor/vanilla-tag/vanilla-tag.js"></script>
+    <script src="~/assets/vendor/vanilla-tag/vanilla-tag.js?t=@DateTime.Now.Ticks"></script>
     <script>
+        var tag = {};
+        function replaceTags(event) {
+            var target = $(event.target);
+            var selectedOption = $('option:selected', target);
+            var tags = selectedOption.data('tags');
+            tag.clear();
+            if (tags.indexOf(",") > -1) {
+                tags.split(',').forEach((value, index) => {
+                    if (value && tag) {
+                        tag.addTag(value);
+                    }
+
+                });
+            }
+            else {
+                tag.addTag(tags);
+            }
+        }
         $(document).ready(function () {
             $('.summernote').summernote({
                 lang: 'tr-TR',
@@ -108,9 +166,11 @@
                 excludeRegex: /_|Enter/,
                 splitChars: [13, ','],
                 maxTagCount: 5,
-                selector: '#tagMe'
+                selector: '#tagMe',
+                caseSensitive: false
             };
-            vanillaTag.init(options);
+            tag = vanillaTag.init(options);
+
         });
     </script>
 

@@ -1,0 +1,2 @@
+CID;Path;Author;On;Tags;ImageFile;Describer;Header;HtmlFile;
+2021-01-10-132051-e;h:\root\home\testantobder-001\www\antobder\articles\editorial\2021\01\10-132051;Perihan şAHİN Bal;2021-01-10 13:20;;header.jpg;ÇEYİZ SANDIĞISevmek neydi?Sevmek fedakârlıktı. Sevmek mücadele et;ÇEYİZ SANDIĞI;Index.html;

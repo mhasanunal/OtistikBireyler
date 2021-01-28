@@ -19,8 +19,11 @@ namespace ANTOBDER.Controllers
             {
                 faaliyetler = db.Contents
                     .Where(e => !e.IsEditorial)
+                    // if you ever going to use an actual DB
+                    // and an orm, change this where condition
+                    // as e => !e.CID.EndsWith(EditorialConstant);
                     .OrderByDescending(e => e.On)
-                    .Take(6)
+                    .Take(24)
                     .ToList();
 
             }

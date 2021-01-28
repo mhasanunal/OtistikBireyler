@@ -1,0 +1,2 @@
+CID;Path;Author;On;Tags;ImageFile;Describer;Header;HtmlFile;
+2021-01-10-122703-f;h:\root\home\testantobder-001\www\antobder\articles\events\2021\01\10-122703;Perihan  Şahin Bal;2021-01-10 12:27;;header.jpg;;Bizim otizm köyünde Pandemi nedeniyle ara verilen yüzyüze eğitime 12 Ocak 2021 salı günü yeniden başlıyoruz.;Index.html;

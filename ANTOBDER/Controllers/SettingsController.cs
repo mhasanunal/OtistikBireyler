@@ -336,8 +336,8 @@ namespace ANTOBDER.Controllers
             {
                 BackupUntil(until, _Extentions.ArticleRootPath(), zip, deleteFile);
                 var dbRoot = _Extentions.GetDatabaseDir();
-                var replaced = _Extentions.GetRootDirectory();
-                var dbEntry = zip.CreateEntry(dbRoot.Replace(replaced + "\\", ""));
+                var toBeReplaced = _Extentions.GetRootDirectory();
+                var dbEntry = zip.CreateEntry(dbRoot.Replace(toBeReplaced + "\\", ""));
 
                 using (var wr = new BinaryWriter(dbEntry.Open()))
                 {

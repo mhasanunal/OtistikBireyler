@@ -4,17 +4,17 @@
 }
 <style>
     .main-banner::before {
-        width:98%;
-        z-index:-1;
+        width: 98%;
+        z-index: -1;
         background-image: url("/assets/img/slide/slide-1.jpg");
         background-position: center; /* Center the image */
         background-repeat: no-repeat; /* Do not repeat the image */
         background-size: cover; /* Resize the background image to cover the entire container */
-        max-height:15em;
-        position:absolute;
+        max-height: 15em;
+        position: absolute;
         /*filter:blur(1px);*/
-        height:15em;
-        content:'';
+        height: 15em;
+        content: '';
     }
 </style>
 <div id="topbar" class="d-none d-lg-flex align-items-center fixed-top antobder-center">
@@ -62,51 +62,51 @@
         <div class="container width-inherit">
             <div class="row">
 
-                    <nav id="main-nav" class="nav-menu d-none d-lg-block">
-                        <ul>
-                            <li class="@(action=="Index"?"active":"")"><a href="@Url.Action("Index","Home")">Ana Sayfa</a></li>
-                            <li class="drop-down @(action=="About"?"active":"")">
-                                <a href="#">Derneğimiz</a>
-                                <ul>
-                                    <li><a href="@Url.Action("GetLegalDocument","Home")">Tüzük</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Dernek Tarihçesi"})">Dernek Tarihçesi</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Yönetim Kurulu"})">Yönetim Kurulu</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Denetim Kurulu"})">Denetim Kurulu</a></li>
+                <nav id="main-nav" class="nav-menu d-none d-lg-block">
+                    <ul>
+                        <li class="@(action=="Index"?"active":"")"><a href="@Url.Action("Index","Home")">Ana Sayfa</a></li>
+                        <li class="drop-down @(action=="About"?"active":"")">
+                            <a href="#">Derneğimiz</a>
+                            <ul>
+                                <li><a href="@Url.Action("GetLegalDocument","Home")">Tüzük</a></li>
+                                <li><a href="@Url.Action("ShowPage","Home",new { id="Dernek Tarihçesi"})">Dernek Tarihçesi</a></li>
+                                <li><a href="@Url.Action("ShowPage","Home",new { id="Yönetim Kurulu"})">Yönetim Kurulu</a></li>
+                                <li><a href="@Url.Action("ShowPage","Home",new { id="Gönüllü ve Bağışçılar"})">Gönüllü/Bağışçılar</a></li>
 
-                                </ul>
-                            </li>
-                            <li class="drop-down">
-                                <a href="#">Otizm</a>
-                                <ul>
-                            <li class=""><a href="@Url.Action("ShowPage","Home",new { id="Otizim Tanımı"})">Tanımı</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Otizim Belirtileri"})">Belirtileri</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Ülkemizde Otizim ve Kurumları"})">Ülkemizde Otizim ve Kurumları</a></li>
+                            </ul>
+                        </li>
+                        <li class="drop-down">
+                            <a href="#">Otizm</a>
+                            <ul>
+                                <li class=""><a href="@Url.Action("ShowPage","Home",new { id="Otizim Tanımı"})">Tanımı</a></li>
+                                <li><a href="@Url.Action("ShowPage","Home",new { id="Otizim Belirtileri"})">Belirtileri</a></li>
+                                <li><a href="@Url.Action("ShowPage","Home",new { id="Ülkemizde Otizim ve Kurumları"})">Ülkemizde Otizim ve Kurumları</a></li>
 
-                                </ul>
-                            </li>
-                            <li class="drop-down">
-                                <a href="#">Faaliyetlerimiz</a>
-                                <ul>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Eğitim Faaliyetleri"})">Eğitim Faaliyetleri</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Spor Faaliyetleri"})">Spor Faaliyetleri</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Kültürel ve Sosyal Faaliyetler"})">Kültürel ve Sosyal Faaliyetler</a></li>
+                            </ul>
+                        </li>
+                        <li class="drop-down">
+                            <a href="#">Faaliyetlerimiz</a>
+                            <ul>
+                                <li><a href="@Url.Action("ListArticle","Content",new { tags="bizim otizim köyü,Eğitim,Faaliyet"})">Eğitim Faaliyetleri</a></li>
+                                <li><a href="@Url.Action("ListArticle","Content",new { tags="bizim otizim köyü,Spor,Faaliyet"})">Spor Faaliyetleri</a></li>
+                                <li><a href="@Url.Action("ListArticle","Content",new { tags="bizim otizim köyü,Kültürel ve Sosyal,Faaliyet"})">Kültürel ve Sosyal Faaliyetler</a></li>
 
-                                </ul>
-                            </li>
+                            </ul>
+                        </li>
 
-                            <li class="drop-down ">
-                                <a href="#">Bizim Otizm Köyü</a>
-                                <ul>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Köy Tanım ve Tarihçe"})">Tanım ve Tarihçe</a></li>
-                                    <li><a href="@Url.Action("ShowPage","Home",new { id="Köy Etkinlikler"})">Etkinlikler</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="@Url.Action("ShowPage","Home",new { id="Dernek Duyuruları"})">Duyurular</a></li>
-                            <li><a class="d-none d-lg-block" href="#contact">İletişim</a></li>
-                            <li><a class="d-md-block d-lg-none d-sm-block" href="#contact1">İletişim</a></li>
+                        <li class="drop-down ">
+                            <a href="#">Bizim Otizm Köyü</a>
+                            <ul>
+                                <li><a href="@Url.Action("ShowPage","Home",new { id="Köy Tanım ve Tarihçe"})">Tanım ve Tarihçe</a></li>
+                                <li><a href="@Url.Action("ListArticle","Content",new { tags="bizim otizim köyü,Faaliyet"})">Etkinlikler</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="@Url.Action("ListArticle","Content",new { tags="duyuru"})">Duyurular</a></li>
+                        <li><a class="d-none d-lg-block" href="#contact">İletişim</a></li>
+                        <li><a class="d-md-block d-lg-none d-sm-block" href="#contact1">İletişim</a></li>
 
-                        </ul>
-                    </nav>
+                    </ul>
+                </nav>
 
 
             </div>

@@ -180,16 +180,11 @@
     <Content Include="App_Data\knowledgebase\db.accdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="pages\Denetim Kurulu.html" />
-    <Content Include="pages\Dernek Duyuruları.html" />
+    <Content Include="pages\Gönüllü ve Bağışçılar.html" />
     <Content Include="pages\Dernek Tarihçesi.html" />
-    <Content Include="pages\Eğitim Faaliyetleri.html" />
-    <Content Include="pages\Köy Etkinlikler.html" />
     <Content Include="pages\Köy Tanım ve Tarihçe.html" />
-    <Content Include="pages\Kültürel ve Sosyal Faaliyetler.html" />
     <Content Include="pages\Otizim Belirtileri.html" />
     <Content Include="pages\Otizim Tanımı.html" />
-    <Content Include="pages\Spor Faaliyetleri.html" />
     <Content Include="pages\Yönetim Kurulu.html" />
     <Content Include="pages\Ülkemizde Otizim ve Kurumları.html" />
     <Content Include="assets\css\style.css" />
@@ -264,8 +259,6 @@
     <Content Include="assets\vendor\venobox\venobox.js" />
     <Content Include="assets\vendor\venobox\venobox.min.css" />
     <Content Include="assets\vendor\venobox\venobox.min.js" />
-    <Content Include="assets\video\AA.webm" />
-    <Content Include="assets\video\son-dakika.com.webm" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />

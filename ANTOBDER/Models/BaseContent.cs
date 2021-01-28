@@ -8,7 +8,7 @@ using System.IO;
 namespace ANTOBDER.Models
 {
     [Table("Users")]
-    public class User:IEntity<int>
+    public class User : IEntity<int>
     {
         public int Id { get; set; }
         public string Username { get; set; }
@@ -31,7 +31,10 @@ namespace ANTOBDER.Models
         public string Header { get; set; }
         public string HtmlFile { get; set; }
         public bool IsEditorial { get { return CID.EndsWith(_Extentions.EditorialConstant); } }
-
+        /// <summary>
+        /// Generates a relative path with respect to server path: For ex: /articles
+        /// </summary>
+        /// <returns></returns>
         public string GenerateRelativePath()
         {
             return this.Path.Replace(_Extentions.GetRootDirectory(), string.Empty);
@@ -40,6 +43,21 @@ namespace ANTOBDER.Models
         public string GenerateRelativePathIndependently()
         {
             return this.Path.Split(new string[] { "articles" }, StringSplitOptions.None)[1];
+        }
+
+        public bool HasImageGallery()
+        {
+            return Directory.Exists(this.Path + "\\" + _Extentions.GalleryPathName);
+        }
+        public IEnumerable<string> IterateImageGallery()
+        {
+            if (this.HasImageGallery())
+            {
+                foreach (var item in Directory.EnumerateFiles(this.Path + "\\" + _Extentions.GalleryPathName))
+                {
+                    yield return item.Replace(this.Path,"");
+                }
+            }
         }
     }
 

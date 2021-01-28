@@ -11,23 +11,26 @@
     <div class="text-muted">
         @if (Model.Item1 != null)
         {
-            <text>
-                Arama Kriteri : <br />
+            <div>
+                <strong>Arama Kriteri : </strong><br />
+                <div style="font-style:italic">
+
                 @if (@Model.Item1.Contains(';'))
                 {
                     var filterArray = @Model.Item1.Split(';');
-                    <text>
+                    <span>
                         @filterArray[0]<br />
                         @filterArray[1]
-                    </text>
+                    </span>
                 }
                 else
                 {
-                    <text>
+                    <span>
                         @Model.Item1
-                    </text>
+                    </span>
                 }
-            </text>
+                </div>
+            </div>
         }
     </div>
     <div class="row" style="justify-content:center;">
@@ -38,13 +41,16 @@
                 <img class="card-img-top" src="/@(item.GenerateRelativePath()+"\\"+item.ImageFile)" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title">@item.Header</h5>
-                    @foreach (var tag in item.Tags.Split('_'))
+                    @if (item.Tags != null && item.Tags.Any())
                     {
+                        foreach (var tag in item.Tags.Split('_'))
+                        {
 
-                        <a class="badge badge-info" href="@Url.Action("ListArticle","Content")?tags[0]=@tag" title="Bu kategoride olanları listele">
-                            @tag
-                        </a>
+                            <a class="badge badge-info" href="@Url.Action("ListArticle","Content",new { Tags=tag,ListAll=true})" title="Bu kategoride olanları listele">
+                                @tag
+                            </a>
 
+                        }
                     }
                     <p class="card-text">@item.Describer</p>
                     <a href="@Url.Action("ReadArticle","Content",new { id=item.CID})" class="get-started-btn">Detaylı Oku</a>

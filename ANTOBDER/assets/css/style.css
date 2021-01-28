@@ -1569,5 +1569,15 @@ body.admin > #header {
     body.admin > #header {
         top: unset !important;
     }
+    #content>*{
+        max-width:100%!important;
+    }
+}
 
+.text-size-changer{
+    cursor:pointer!important;
+}
+
+#content>*{
+    font-size:unset!important;
 }
