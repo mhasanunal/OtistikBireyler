@@ -56,6 +56,7 @@ namespace ANTOBDER.Controllers
 
             var cd = new ContentDisposition("attachment")
             {
+                
                 FileName = $"ANTOBDER-@{DateTime.Now.ToString("yyyyMMdd")}_UNTIL@{date}.bkp",
                 Inline = false
             };
@@ -147,7 +148,8 @@ namespace ANTOBDER.Controllers
                     db.SaveChanges();
                 }
 
-                var normalDbDir = _Extentions.GetDatabaseDir().Replace(_Extentions.GetRootDirectory(), "");
+                var normalDbDir = _Extentions.GetDatabaseDir()
+                                    .Replace(_Extentions.GetRootDirectory(), "");
                 var backedUpDatabaseDir = destination + "\\" + normalDbDir;
                 var backedUpContext = new ContextBase("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + backedUpDatabaseDir);
                 foreach (var item in backedUpContext.Contents)
@@ -176,6 +178,7 @@ namespace ANTOBDER.Controllers
                         System.IO.File.Copy(filePath, destFile, true);
                     }
                 }
+
                 db.SaveChanges();
             }
             System.IO.Directory.Delete(destination, true);
@@ -322,7 +325,10 @@ namespace ANTOBDER.Controllers
             // Return total size
             return b;
         }
-        MemoryStream GenerateBackup(DateTime? until = null, bool deleteFile = false)
+        MemoryStream GenerateBackup(
+            DateTime? until = null,
+            bool deleteFile = false
+            )
         {
             if (until == null)
             {
@@ -346,6 +352,22 @@ namespace ANTOBDER.Controllers
                     wr.Flush();
                     wr.Close();
                 }
+
+                //if (includeStaticHTMLFiles)
+                //{
+                //    foreach (var item in Directory.EnumerateDirectories(_Extentions.PagesRootPath()))
+                //    {
+                //        var entry = zip.CreateEntry(item.Replace(toBeReplaced + "\\", ""));
+                //        using (var wr = new BinaryWriter(entry.Open()))
+                //        {
+                //            var bytes = System.IO.File.ReadAllBytes(item);
+                //            wr.Write(bytes);
+                //            wr.Flush();
+                //            wr.Close();
+                //        }
+                //    }
+                //}
+
                 if (deleteFile)
                 {
                     Directory.Delete(_Extentions.EventsRootPath(), true);
@@ -393,6 +415,7 @@ namespace ANTOBDER.Controllers
                     System.IO.File.Delete(actualPath);
                 }
             }
+
         }
         IEnumerable<ZipArchiveEntry> Entries(IEnumerable<string> files, string path, ZipArchive zip, DateTime? until)
         {

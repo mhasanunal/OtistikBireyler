@@ -121,7 +121,7 @@ namespace ANTOBDER.Controllers
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
 
-        static Image ImageToFixedSize(Image image, Size newSize)
+        Image ImageToFixedSize(Image image, Size newSize)
         {
             var width = newSize.Width;
             var height = newSize.Height;

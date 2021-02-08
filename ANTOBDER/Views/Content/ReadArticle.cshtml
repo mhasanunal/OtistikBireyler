@@ -34,7 +34,7 @@
     <br />
     <p>
         <span class="icofont icofont-calendar"></span>
-        @Model.On.ToString("dd MMMM yyyy HH:mm")
+        @Model.On.ToString("dd MMMM yyyy HH:mm", new System.Globalization.CultureInfo("tr-TR"))
         <br />
         <div>
             <strong>Yazar :&nbsp;</strong>
@@ -61,17 +61,7 @@
                     </div>
                 }
             </div>
-            <div class="float-right">
-                <div style="font-size: 1.75rem;-moz-user-select: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;-o-user-select: none;"
-                     unselectable="on"
-                     onselectstart="return false;"
-                     onmousedown="return false;">
-                    <span contenteditable="false" class="text-size-changer" id="decreasetext" style="font-size:0.75em;">A-</span>
-                    &nbsp;
-                    <span contenteditable="false" class="text-size-changer" id="increasetext">A+</span>
-                </div>
-            </div>
-            <br />
+
         </div>
     </p>
     <hr />
@@ -81,6 +71,18 @@
              loading="lazy" src="~/@(Model.GenerateRelativePath()+"\\"+@Model.ImageFile)" />
 
     </div>
+
+    <div class="float-right">
+        <div style="font-size: 1.75rem;-moz-user-select: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;-o-user-select: none;"
+             unselectable="on"
+             onselectstart="return false;"
+             onmousedown="return false;">
+            <span contenteditable="false" class="text-size-changer" id="decreasetext" style="font-size:0.75em;">A-</span>
+            &nbsp;
+            <span contenteditable="false" class="text-size-changer" id="increasetext">A+</span>
+        </div>
+    </div>
+    <br />
     <hr />
     <div id="content">
         @Html.Raw(System.IO.File.ReadAllText(Model.Path + "\\" + Model.HtmlFile))
@@ -102,7 +104,7 @@
     </div>
     <hr />
 </section>
-&#x27;
+
 
 @section scripts{
 
