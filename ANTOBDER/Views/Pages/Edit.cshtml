@@ -1,4 +1,4 @@
-﻿@model Tuple<string, string>
+﻿@model ANTOBDER.Models.EF_MODELS.DynamicHTMLPage
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -13,7 +13,7 @@
             <a class="btn btn-outline-secondary" href="@Url.Action("ListDynamicPages","Enter")">Dinamik Sayfa Listesine Dön</a>
         </div>
         <h4>
-            @(Model.Item1).html
+            @(Model.PageName).html
             <small class="@(hasMessage?"text-success":"text-danger")">
                 @if (!hasMessage)
                 {
@@ -31,7 +31,7 @@
         </h4>
     </div>
     <div>
-        <form action="@Url.Action("Edit","Pages",new { id=Model.Item1})" method="post">
+        <form action="@Url.Action("Edit","Pages",new { id=Model.PageName})" method="post">
 
             @Html.AntiForgeryToken()
             <input hidden class="d-none" name="HtmlBody" />
@@ -40,7 +40,7 @@
     </div>
     <div>
         <div class="summernote">
-            @Html.Raw(Model.Item2)
+            @Html.Raw(Model.RawHTML)
 
         </div>
     </div>

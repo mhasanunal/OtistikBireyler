@@ -28,16 +28,17 @@
                             <li><a href="@Url.Action("Specs","Settings")">Disk/Hafıza Kullanımı</a></li>
                             <li><a href="@Url.Action("Database","Settings")">Veritbanı Yedekleme/Sıfırlama</a></li>
                             <li><a href="@Url.Action("Users","Settings")">Kullanıcılar</a></li>
+                            <li><a href="@Url.Action("Site","Settings")">Site Ayarları</a></li>
                         </ul>
                     </li>
-                    <li class="drop-down">
+                    @*<li class="drop-down">
                         <a href="#">Listele</a>
                         <ul>
                             <li><a href="@Url.Action("ListArticle","Content")">Faaliyet/Haber Listele</a></li>
                             <li><a href="@Url.Action("ListArticle","Content",new { tags="yazı"})">Yazıları Listele</a></li>
                             <li><a href="@Url.Action("ListArticle","Content",new { listAll=true})">Tüm İçerikleri Listele</a></li>
                         </ul>
-                    </li>
+                    </li>*@
                     <li>
                         <a href="@Url.Action("Logout","Enter")" class="btn btn-outline-dark">
                             Çıkış Yap

@@ -209,7 +209,36 @@ namespace ANTOBDER.Controllers
             System.IO.File.Delete(path);
             return destination;
         }
+        public ActionResult Site()
+        {
+            IEnumerable<SiteSetting> settings = null;
+            using (var db = new EF_CONTEXT())
+            {
+                settings = db.SiteSettings.ToList();
 
+            }
+            return View(settings);
+        }
+
+        [HttpPost,ValidateAntiForgeryToken]
+        public ActionResult Change(string setting,string value)
+        {
+            SettingsENUM @enum;
+            var parsed = Enum.TryParse<SettingsENUM>(setting, out @enum);
+            if (!parsed)
+            {
+                return HttpNotFound();
+            }
+
+            using (var db = new EF_CONTEXT())
+            {
+                var ss= db.SiteSettings.FirstOrDefault(s=>s.ENUM==setting);
+                ss.Value = value;
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Site");
+        }
 
         public ActionResult CreateUser(User usr)
         {
@@ -344,17 +373,17 @@ namespace ANTOBDER.Controllers
                 BackupUntil(until, _Extentions.ArticleRootPath(), zip, deleteFile);
 
                 BackupDBasCSV(zip);
-                var dbRoot = _Extentions.GetDatabaseDir();
-                var toBeReplaced = _Extentions.GetRootDirectory();
-                var dbEntry = zip.CreateEntry(dbRoot.Replace(toBeReplaced + "\\", ""));
+                //var dbRoot = _Extentions.GetDatabaseDir();
+                //var toBeReplaced = _Extentions.GetRootDirectory();
+                //var dbEntry = zip.CreateEntry(dbRoot.Replace(toBeReplaced + "\\", ""));
 
-                using (var wr = new BinaryWriter(dbEntry.Open()))
-                {
-                    var bytes = System.IO.File.ReadAllBytes(_Extentions.GetDatabaseDir());
-                    wr.Write(bytes);
-                    wr.Flush();
-                    wr.Close();
-                }
+                //using (var wr = new BinaryWriter(dbEntry.Open()))
+                //{
+                //    var bytes = System.IO.File.ReadAllBytes(_Extentions.GetDatabaseDir());
+                //    wr.Write(bytes);
+                //    wr.Flush();
+                //    wr.Close();
+                //}
 
                 //if (includeStaticHTMLFiles)
                 //{

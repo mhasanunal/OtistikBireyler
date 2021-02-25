@@ -20,7 +20,7 @@ namespace ANTOBDER.Models.EF_MODELS
         public string Value { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string DataTypeENUM { get; set; }
     }
 }

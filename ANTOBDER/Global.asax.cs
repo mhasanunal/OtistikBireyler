@@ -1,4 +1,5 @@
 ﻿using ANTOBDER.App_Start;
+using ANTOBDER.Models.EF_MODELS;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
@@ -39,6 +40,7 @@ namespace ANTOBDER
                 //    }
                 //}
             });
+            
         }
         protected void Application_Start()
         {

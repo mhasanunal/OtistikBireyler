@@ -21,18 +21,33 @@ namespace ANTOBDER.Controllers
     {
         const int AllowedMaxWidthInPixels = 659;
 
+        static byte OutputImageQualityPercentage = 55;
+        static int MaxSummaryOfWidthAndHeight = 3000;
         [HttpPost]
         [Authorize]
         public ActionResult Create(ContentCreateModel model)
         {
             var img = model.ImageFile.FileName;
-            var path = SaveFiles(model);
+            using (var db = new EF_CONTEXT())
+            {
+                string outputqulity = db.GetSetting(SettingsENUM.IMAGE_COMPRESSION_QUALITY);
+                string maxSummaryOfWidthAndHeight = db.GetSetting(SettingsENUM.IMAGE_COMPRESSION_MAXSUMOFWIDTHANDHEIGHT);
+                if (outputqulity.Length>0)
+                {
+                    OutputImageQualityPercentage = byte.Parse(outputqulity);
+                }
+                if (maxSummaryOfWidthAndHeight.Length>0)
+                {
+                    MaxSummaryOfWidthAndHeight = int.Parse(maxSummaryOfWidthAndHeight);
 
+                }
+            }
+            var path = SaveFiles(model);
             var content = new Content()
             {
                 CID = model.CID,
                 Author = model.Author.BuildUpAuthorText(),
-                Describer = _Extentions.RemoveUnwantedTags(model.HTMLBody, 65),
+                Describer = _Extentions.RemoveUnwantedTags(model.HTMLBody, 150).Trim(),
                 Header = model.Header ?? "İçerik Başlığı",
                 ImageFile = "header" + Path.GetExtension(model.ImageFile.FileName),
                 On = model.AddedOn,
@@ -185,6 +200,8 @@ namespace ANTOBDER.Controllers
 
             return destImage;
         }
+
+
         public ActionResult ListArticle(
             string author,
             string tags,
@@ -326,8 +343,9 @@ namespace ANTOBDER.Controllers
 
             Antobder.Drawing.ReducerOptions opt = new Antobder.Drawing.ReducerOptions(
                 filename: imageFileName,
-                maxSummaryOfWidthAndHeight: int.Parse(ConfigurationManager.AppSettings["maxSummaryOfWidthAndHeight"]),
-                destinationFolder: path
+                maxSummaryOfWidthAndHeight: MaxSummaryOfWidthAndHeight,
+                destinationFolder: path,
+                outputQuality: OutputImageQualityPercentage
                 );
 
             Antobder.Drawing.ImageSizeReducer.ReduceSizeOnDisk(stream, opt);

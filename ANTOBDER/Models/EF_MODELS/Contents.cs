@@ -23,14 +23,12 @@ namespace ANTOBDER.Models.EF_MODELS
 
         public DateTime On { get; set; }
 
-        [Required]
         public string Tags { get; set; }
 
         [Required]
         [StringLength(50)]
         public string ImageFile { get; set; }
 
-        [Required]
         [StringLength(250)]
         public string Describer { get; set; }
 
@@ -38,7 +36,6 @@ namespace ANTOBDER.Models.EF_MODELS
         [StringLength(250)]
         public string Header { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string HtmlFile { get; set; }
     }

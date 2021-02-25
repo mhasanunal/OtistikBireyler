@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace ANTOBDER.Modules
 {
@@ -30,7 +31,7 @@ namespace ANTOBDER.Modules
             var filePath = BaseDirForCSVFiles + "\\" + ContentsBackupPath;
             if (File.Exists(filePath))
             {
-                var allLines = File.ReadAllLines(filePath);
+                var allLines = File.ReadAllLines(filePath,Encoding.GetEncoding(1254));
                 foreach (var line in allLines)
                 {
                     //                    wr.WriteLine($"{item.CID};{item.Path};{item.Author};{item.On.ToString("yyyy-MM-dd HH:mm")};{item.Tags};{item.ImageFile};{item.Describer};{item.Header};{item.HtmlFile}");
@@ -44,8 +45,9 @@ namespace ANTOBDER.Modules
                         On = DateTime.Parse(fields[3]),
                         Tags = fields[4],
                         ImageFile = fields[5],
-                        Header = fields[6],
-                        HtmlFile = fields[7]
+                        Describer=fields[6],
+                        Header = fields[7],
+                        HtmlFile = fields[8]
 
 
                     };
@@ -54,20 +56,22 @@ namespace ANTOBDER.Modules
         }
         public IEnumerable<DynamicHTMLPage> DynamicHTMLPages()
         {
-            var filePath = BaseDirForCSVFiles + "\\" + DynamicHTMLPagesBackupPath;
-            if (File.Exists(filePath))
-            {
-                var allLines = File.ReadAllLines(filePath);
-                foreach (var line in allLines)
-                {
-                    //    wr.WriteLine($"{item.PageName};{item.RawHTML}");
-                    var fields = line.Split(';');
-                    yield return new DynamicHTMLPage {
-                        PageName = fields[0],
-                        RawHTML= fields[1]
-                    };
-                }
-            }
+            //var filePath = BaseDirForCSVFiles + "\\" + DynamicHTMLPagesBackupPath;
+            //if (File.Exists(filePath))
+            //{
+            //    var allLines = File.ReadAllLines(filePath, Encoding.GetEncoding(1254));
+            //    foreach (var line in allLines)
+            //    {
+            //        //    wr.WriteLine($"{item.PageName};{item.RawHTML}");
+            //        var fields = line.Split(';');
+            //        yield return new DynamicHTMLPage {
+            //            PageName = fields[0]
+            //            //,
+            //            //RawHTML= fields[1]
+            //        };
+            //    }
+            //}
+            return null;
         }
         public IEnumerable<SiteSetting> SiteSettings()
         {
@@ -75,7 +79,7 @@ namespace ANTOBDER.Modules
             var filePath = BaseDirForCSVFiles + "\\" + SiteSettingsBackupPath;
             if (File.Exists(filePath))
             {
-                var allLines = File.ReadAllLines(filePath);
+                var allLines = File.ReadAllLines(filePath, Encoding.GetEncoding(1254));
                 foreach (var line in allLines)
                 {
 
@@ -107,16 +111,20 @@ namespace ANTOBDER.Modules
         internal void ZipEntryFor_dynamicHTMLPages()
         {
             //var dynamicHTMLPages = _Extentions.GetBackupFolderForDB() + "\\dynamicHTMLPages.csv";
-            var dynamicEntry = Zip.CreateEntry(DynamicHTMLPagesBackupPath);
-            using (var wr = new StreamWriter(dynamicEntry.Open()))
-            {
-                foreach (var item in Db.DynamicHTMLPages)
-                {
-                    wr.WriteLine($"{item.PageName};{item.RawHTML}");
-                }
-                wr.Flush();
-                wr.Close();
-            }
+            //var dynamicEntry = Zip.CreateEntry(DynamicHTMLPagesBackupPath);
+
+            //using (var wr = new BinaryWriter(dynamicEntry.Open()))
+            //{
+            //    StringBuilder sb = new StringBuilder();
+            //    foreach (var item in Db.DynamicHTMLPages)
+            //    {
+            //        sb.AppendLine($"{item.PageName};{item.RawHTML}");
+            //    }
+            //    var bytes = Encoding.GetEncoding(1254).GetBytes(sb.ToString());
+            //    wr.Write(bytes);
+            //    wr.Flush();
+            //    wr.Close();
+            //}
         }
 
         internal void ZipEntryFor_siteSettings()
@@ -124,12 +132,15 @@ namespace ANTOBDER.Modules
             //var siteSettings = _Extentions.GetBackupFolderForDB() + "\\siteSettings.csv";
             var settingsEntry = Zip.CreateEntry(SiteSettingsBackupPath);
 
-            using (var wr = new StreamWriter(settingsEntry.Open()))
+            using (var wr = new BinaryWriter(settingsEntry.Open()))
             {
+                StringBuilder sb = new StringBuilder();
                 foreach (var item in Db.SiteSettings)
                 {
-                    wr.WriteLine($"{item.ENUM};{item.Value};{item.DataTypeENUM}");
+                    sb.AppendLine($"{item.ENUM};{item.Value};{item.DataTypeENUM}");
                 }
+                var bytes = Encoding.GetEncoding(1254).GetBytes(sb.ToString());
+                wr.Write(bytes);
                 wr.Flush();
                 wr.Close();
             }
@@ -137,15 +148,18 @@ namespace ANTOBDER.Modules
 
         internal void ZipEntryFor_contents()
         {
-            //var contents = _Extentions.GetBackupFolderForDB() + "\\contents.csv";
             var contentEntry = Zip.CreateEntry(ContentsBackupPath);
 
-            using (var wr = new StreamWriter(contentEntry.Open()))
+            using (var wr = new BinaryWriter(contentEntry.Open()))
             {
+                StringBuilder sb = new StringBuilder();
                 foreach (var item in Db.Contents)
                 {
-                    wr.WriteLine($"{item.CID};{item.Path};{item.Author};{item.On.ToString("yyyy-MM-dd HH:mm")};{item.Tags};{item.ImageFile};{item.Describer};{item.Header};{item.HtmlFile}");
+                    sb.AppendLine($"{item.CID};{item.Path};{item.Author};{item.On.ToString("yyyy-MM-dd HH:mm")};{item.Tags};{item.ImageFile};{item.Describer};{item.Header};{item.HtmlFile}");
+
                 }
+                var bytes = Encoding.GetEncoding(1254).GetBytes(sb.ToString());
+                wr.Write(bytes);
                 wr.Flush();
                 wr.Close();
             }

@@ -1,0 +1,2 @@
+CID;Path;Author;On;Tags;ImageFile;Describer;Header;HtmlFile;
+2021-02-25-224901-f;D:\OtistikBireyler\ANTOBDER\articles\events\2021\02\25-224901;Ercan Bal;2021-02-25 22:49;bizim otizm köyü_kültürel ve sosyal_faaliyet;header.jpg;fdghfdghfdhfdhfghfgh;ddhgf;Index.html;

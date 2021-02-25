@@ -286,7 +286,7 @@ namespace ANTOBDER
 
         public static string GalleryPathName = "gallery";
 
-        public static string CreateID(bool isEditorial)
+        public static string CreateID(bool isEditorial=false)
         {
             return $"{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}-{(isEditorial ? EditorialConstant : EventConstant)}";
         }
@@ -377,7 +377,7 @@ namespace ANTOBDER
 
         public static string GetBackupFolderForDB()
         {
-            return "\\db_backups";
+            return "db_backups";
         }
     }
 }

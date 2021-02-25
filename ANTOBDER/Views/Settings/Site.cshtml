@@ -1,0 +1,84 @@
+﻿@model IEnumerable<ANTOBDER.Models.EF_MODELS.SiteSetting>
+
+@{
+    ViewBag.Title = "Site";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+
+<section class="info">
+
+    <h2>Site Ayarları</h2>
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Ayar Açıklaması</th>
+                <th>Ayar Değeri</th>
+                <th>Yeni değer</th>
+                <th>Komutlar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+
+                foreach (var item in Model)
+                {
+
+                        
+                            var asEnum = Enum.Parse(typeof(ANTOBDER.Models.EF_MODELS.SettingsENUM), item.ENUM);
+                            var dataEnum = Enum.Parse(typeof(ANTOBDER.Models.EF_MODELS.DataTypeENUM), item.DataTypeENUM);
+                        
+                    <tr>
+                        <form method="post" action="@Url.Action("Change","Settings")">
+
+                            @switch (asEnum)
+                            {
+                                case ANTOBDER.Models.EF_MODELS.SettingsENUM.IMAGE_COMPRESSION_QUALITY:
+                                    <td>Fotoğraf Kalitesi Düşürme (%)</td>
+                                    break;
+                                case ANTOBDER.Models.EF_MODELS.SettingsENUM.IMAGE_COMPRESSION_MAXSUMOFWIDTHANDHEIGHT:
+                                    <td>Fotoğrafların çözünürlük sınırı (yükseklik+genişlik) < Değer</td>
+                                    break;
+                                case ANTOBDER.Models.EF_MODELS.SettingsENUM.HOMEPAGE_SHOW_CONTENT_LIMITATION:
+                                    <td>Ana Sayfada en son kaç gönderi görünmeli</td>
+                                    break;
+                                default:
+                                    break;
+                            }
+                            <td>@item.Value</td>
+                            <td>
+                                <input hidden class="d-none" name="Setting" value="@item.ENUM" />
+                                @Html.AntiForgeryToken()
+                                @switch (dataEnum)
+                                {
+                                    case ANTOBDER.Models.EF_MODELS.DataTypeENUM.INT:
+                                        <input type="number" name="Value" value="@item.Value" />
+                                        break;
+                                    case ANTOBDER.Models.EF_MODELS.DataTypeENUM.BOOLEAN:
+                                        <input type="checkbox" class="checkbox" name="Value" @(bool.Parse(item.Value) ? "checked" : "") />
+                                        break;
+                                    case ANTOBDER.Models.EF_MODELS.DataTypeENUM.STRING:
+                                        <input type="text" name="Value" value="@item.Value" />
+                                        break;
+                                    case ANTOBDER.Models.EF_MODELS.DataTypeENUM.DATETIME:
+                                        <input type="datetime-local" name="Value" value="@item.Value" />
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            </td>
+                            <td><button type="submit" class="btn btn-outline-info">Değişikliği Kaydet</button></td>
+
+                        </form>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</section>
+

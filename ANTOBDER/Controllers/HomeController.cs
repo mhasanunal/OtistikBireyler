@@ -18,13 +18,19 @@ namespace ANTOBDER.Controllers
             List<Content> faaliyetler;
             using (var db = new EF_CONTEXT())
             {
+                var settingEnum = SettingsENUM.HOMEPAGE_SHOW_CONTENT_LIMITATION.ToString();
+                var setting = db.SiteSettings.FirstOrDefault(s => s.ENUM == settingEnum);
+                if (setting == null)
+                {
+                    setting = new SiteSetting() { Value = 24.ToString() };
+                }
+
+                var limitation = int.Parse(setting.Value);
                 faaliyetler = db.Contents
                     .Where(e => !e.CID.EndsWith("e"))
-                    // if you ever going to use an actual DB
-                    // and an orm, change this where condition
-                    // as e => !e.CID.EndsWith(EditorialConstant);
+
                     .OrderByDescending(e => e.On)
-                    .Take(24)
+                    .Take(limitation)
                     .ToList();
 
             }
@@ -36,13 +42,26 @@ namespace ANTOBDER.Controllers
         }
         public ActionResult ShowPage(string id)
         {
+            DynamicHTMLPage dPage = new DynamicHTMLPage();
+            //using (var db = new EF_CONTEXT())
+            //{
+            //    page = db.DynamicHTMLPages.ToList().FirstOrDefault(e=>e.PageName==id);
+            //    if (page==null)
+            //    {
+            //    return HttpNotFound();
+
+            //    }
+            //    return View(page);
+            //}
             var possiblePath = _Extentions.PagesRootPath() + "\\" + id + ".html";
             if (!System.IO.File.Exists(possiblePath))
             {
                 return HttpNotFound();
             }
             var page = System.IO.File.ReadAllText(possiblePath);
-            return View(new Tuple<string, string>(id.ToTitleCase(), page));
+            dPage.PageName = id;
+            dPage.RawHTML = page;
+            return View(dPage);
         }
 
         public ActionResult GetLegalDocument()

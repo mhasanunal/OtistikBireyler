@@ -189,12 +189,15 @@
     <Compile Include="Controllers\ContentController.cs" />
     <Compile Include="Controllers\PagesController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChangeDynamicPageViewModel.cs" />
     <Compile Include="Models\ContentCreateModel.cs" />
     <Compile Include="Controllers\EnterController.cs" />
+    <Compile Include="Models\EF_MODELS\Class1.cs" />
     <Compile Include="Models\EF_MODELS\Contents.cs" />
     <Compile Include="Models\EF_MODELS\DynamicHTMLPages.cs" />
     <Compile Include="Models\EF_MODELS\EF_CONTEXT.cs" />
+    <Compile Include="Models\EF_MODELS\SettingsENUM.cs" />
     <Compile Include="Models\EF_MODELS\SiteSettings.cs" />
     <Compile Include="Models\EF_MODELS\Users.cs" />
     <Compile Include="Models\IndexViewModel.cs" />
@@ -378,6 +381,7 @@
     <Content Include="Views\Settings\Specs.cshtml" />
     <Content Include="Views\Settings\Database.cshtml" />
     <Content Include="Views\Settings\Users.cshtml" />
+    <Content Include="Views\Settings\Site.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="articles\" />

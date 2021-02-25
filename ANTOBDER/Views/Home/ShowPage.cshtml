@@ -1,11 +1,11 @@
-﻿@model Tuple<string,string>
+﻿@model ANTOBDER.Models.EF_MODELS.DynamicHTMLPage
 @{
-    ViewBag.Title = Model.Item1 ;
+    ViewBag.Title = Model.PageName ;
 }
 
 <section class="info"> 
-    
+    <h2 style="justify-content:center">@Model.PageName</h2>
     <div class="">
-        @Html.Raw(Model.Item2)
+        @Html.Raw(Model.RawHTML)
     </div>
 </section>

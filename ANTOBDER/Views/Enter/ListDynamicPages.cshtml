@@ -18,7 +18,7 @@
     </div>
     <p>Dinamik Sayfalar Sitenin <strong>Ana Menü</strong>sünde bulunan sayfalardır. Dinamik olması sayesinde kendiniz gereken değişikliği yapabilirsiniz.</p>
     <div>
-        <button disabled class="btn btn-outline-success">Yeni Ekle</button>
+        <button disabled hidden class="btn btn-outline-success d-none">Yeni Ekle</button>
     </div>
 
     <table class="table table-light table-striped table-hover table-bordered table-responsive">
@@ -31,12 +31,39 @@
         <tbody>
             @foreach (var item in Model)
             {
+                System.Threading.Thread.Sleep(1);
+                var id = DateTime.Now.Ticks.ToString();
+                id = id.Substring(id.Length - 6, 6);
                 <tr>
                     <td>@(item)</td>
                     <td>
-                        <button disabled href="@Url.Action("Delete","Pages",new { id=item.Replace(".html","")})" class="btn btn-outline-danger">Sil</button>
-                        <a href="@Url.Action("Edit","Pages",new { id=item.Replace(".html","")})" class="btn btn-outline-info">Düzenle</a>
-                        <button disabled class="btn btn-outline-primary">Yeniden Adlandır</button>
+                        <button disabled href="@Url.Action("Delete","Pages",new { id=item.Replace(".html","")})" class="btn btn-outline-danger d-none">Sil</button>
+                        <a href="@Url.Action("Edit","Pages",new { id=item.Replace(".html","")})" class="btn btn-outline-info">
+                            <i class='bx bxs-edit-alt'></i>&nbsp;
+                            Düzenle
+                        </a>
+                        <button disabled class="btn btn-outline-primary d-none">Yeniden Adlandır</button>
+                        <a href="@Url.Action("Download","Pages",new { id=item.Replace(".html","")})"
+                           class="btn btn-outline-primary" title="Bilgisayarınıza indirin">
+                            <i class='bx bxs-download'></i>&nbsp;
+                            Download
+                        </a>
+                        <form style="display:initial" 
+                              action="@Url.Action("Upload","Pages",new { id=item.Replace(".html","")})" 
+                              method="post"
+                              enctype="multipart/form-data">
+                            <input hidden class="d-none" name="id" value="@item" />
+                            @Html.AntiForgeryToken()
+                            <button data-upload="1" type="button" onclick="clicked('#_@id')"
+                                    class="btn btn-outline-danger" title="Sunucuya yükleyin">
+                                <i class='bx bx-upload'></i> &nbsp;
+                                Upload
+                            </button>
+                            <div id="_@id" class="d-none">
+                                <input onchange="handleFileChange('#_@id')" type="file" name="file" value="Dosya seçin" accept=".html" class="" />
+
+                            </div>
+                        </form>
                     </td>
                 </tr>
             }
@@ -44,3 +71,53 @@
     </table>
 
 </section>
+
+@section scripts{
+
+    <script>
+        function close(selector) {
+            $(selector).addClass('d-none');
+            $('[data-upload]').removeAttr('disabled');
+        }
+
+        function clicked(selector) {
+            $('div[id^=_]').addClass('d-none');
+            $(selector).removeClass('d-none');
+
+            $(element).parent().removeClass('d-none');
+
+            $('[data-upload]').attr('disabled','disabled');
+            $('[data-upload]').removeClass('btn-outline-danger');
+            $('[data-upload]').removeClass('btn-danger');
+            $('[data-upload]').addClass('btn-outline-dark');
+
+        }
+
+        function handleFileChange(event) {
+            var element = $(event).children('input[type="file"]');
+            if (element) {
+                element = element[0];
+            }
+            var selected = element.files[0];
+            if (!selected) {
+                $(element).parent().addClass('d-none');
+
+                $('[data-upload]').removeAttr('disabled', 'disabled');
+                $('[data-upload]').removeClass('btn-outline-dark');
+                $('[data-upload]').removeClass('btn-danger');
+                $('[data-upload]').addClass('btn-outline-danger');
+                return;
+            }
+            var btn = $(element).parent().siblings('[data-upload]');
+            btn.removeAttr('disabled');
+
+            btn.removeClass('btn-outline-dark');
+            btn.removeClass('btn-outline-danger');
+            btn.addClass('btn-danger');
+            btn.attr('type', 'submit');
+            btn.attr('onclick', '');
+            
+        }
+    </script>
+
+}

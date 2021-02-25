@@ -1,2 +1,0 @@
-CID;Path;Author;On;Tags;ImageFile;Describer;Header;HtmlFile;
-2021-02-25-021815-f;D:\OtistikBireyler\ANTOBDER\articles\events\2021\02\25-021815;Hasan Ünal;2021-02-25 02:18;bizim otizim köyü_eğitim_faaliyet;header.jpg;fghfghfhfhfgh;ghfhfghfgh;Index.html;

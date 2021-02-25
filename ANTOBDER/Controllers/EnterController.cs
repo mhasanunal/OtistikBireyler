@@ -31,7 +31,9 @@ namespace ANTOBDER.Controllers
         //}
         public ActionResult ListDynamicPages()
         {
-            var list = _Extentions.GetDynamicPages().Select(p => Path.GetFileName(p));
+            var dir = _Extentions.PagesRootPath();
+            var list = Directory.EnumerateFiles(dir).Where(d=>d.EndsWith("html")).Select(e=>Path.GetFileName(e));
+            //var list = new EF_CONTEXT().DynamicHTMLPages.Select(d => d.PageName).ToList();
             return View(list);
         }
 
