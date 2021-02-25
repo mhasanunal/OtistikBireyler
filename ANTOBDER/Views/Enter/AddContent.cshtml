@@ -20,7 +20,7 @@
             </span><br />
             if (TempData["Content"] != null)
             {
-                <a target="_blank" href="@Url.Action("ReadArticle", "Content", new { id=((ANTOBDER.Models.BaseContent)TempData["Content"]).CID})">İçeriği görüntülemek için tıklayın (Yeni sayfada açılır)</a>
+                <a target="_blank" href="@Url.Action("ReadArticle", "Content", new { id=((ANTOBDER.Models.EF_MODELS.Content)TempData["Content"]).CID})">İçeriği görüntülemek için tıklayın (Yeni sayfada açılır)</a>
             }
         }
     </div>

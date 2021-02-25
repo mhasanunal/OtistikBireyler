@@ -1,4 +1,5 @@
 ﻿using ANTOBDER.Models;
+using ANTOBDER.Models.EF_MODELS;
 using ANTOBDER.Modules;
 using HtmlAgilityPack;
 using System;
@@ -10,7 +11,6 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
-using System.Web.UI.WebControls;
 
 namespace ANTOBDER
 
@@ -262,7 +262,7 @@ namespace ANTOBDER
             var dir = GetDirectoryByID(cid);
             return dir;
         }
-        public static string Locate(this BaseContent ct)
+        public static string Locate(this Content ct)
         {
             return GetDirectoryByID(ct.CID);
         }
@@ -292,20 +292,20 @@ namespace ANTOBDER
         }
 
 
-        public static IEnumerable<BaseContent> GetEditorials()
-        {
-            return new ContextBase().Contents
-                .Where(e => e.IsEditorial)
-                .OrderByDescending(c => c.On)
-                .Take(6);
-        }
+        //public static IEnumerable<BaseContent> GetEditorials()
+        //{
+        //    return new ContextBase().Contents
+        //        .Where(e => e.IsEditorial)
+        //        .OrderByDescending(c => c.On)
+        //        .Take(6);
+        //}
 
-        public static string GenerateDirectory(this BaseContent content)
+        public static string GenerateDirectory(this Content content)
         {
 
             if (Directory.Exists(GetDirectoryByID(content.CID)))
             {
-                content.CID = CreateID(content.IsEditorial);
+                content.CID = CreateID(content.IsEditorial());
                 return content.GenerateDirectory();
             }
             else
@@ -335,6 +335,49 @@ namespace ANTOBDER
         public static ClaimsIdentity AsClaimsIdentity(this IIdentity identity)
         {
             return (ClaimsIdentity)identity;
+        }
+
+        public static string[] Columns(this object obj)
+        {
+            return obj.GetType()
+                .GetProperties()
+                .Where(p => p.GetSetMethod(false) != null && p.Name != "Id")
+                .Select(p => p.Name).ToArray();
+        }
+
+        public static bool IsEditorial(this Content content)
+        {
+            return content.CID.EndsWith("e");
+        }
+
+        public static string GenerateRelativePath(this Content content)
+        {
+            return content.Path.Replace(_Extentions.GetRootDirectory(), string.Empty);
+        }
+
+        public static string GenerateRelativePathIndependently(this Content content)
+        {
+            return content.Path.Split(new string[] { "articles" }, StringSplitOptions.None)[1];
+        }
+
+        public static bool HasImageGallery(this Content content)
+        {
+            return Directory.Exists(content.Path + "\\" + _Extentions.GalleryPathName);
+        }
+        public static IEnumerable<string> IterateImageGallery(this Content content)
+        {
+            if (content.HasImageGallery())
+            {
+                foreach (var item in Directory.EnumerateFiles(content.Path + "\\" + _Extentions.GalleryPathName))
+                {
+                    yield return item.Replace(content.Path, "");
+                }
+            }
+        }
+
+        public static string GetBackupFolderForDB()
+        {
+            return "\\db_backups";
         }
     }
 }

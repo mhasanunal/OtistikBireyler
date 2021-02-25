@@ -1,5 +1,6 @@
 ﻿using ANTOBDER.App_Start;
 using ANTOBDER.Models;
+using ANTOBDER.Models.EF_MODELS;
 using ANTOBDER.Modules;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,11 @@ namespace ANTOBDER.Controllers
     {
         public ActionResult Index()
         {
-            List<BaseContent> faaliyetler;
-            using (var db = new ContextBase())
+            List<Content> faaliyetler;
+            using (var db = new EF_CONTEXT())
             {
                 faaliyetler = db.Contents
-                    .Where(e => !e.IsEditorial)
+                    .Where(e => !e.CID.EndsWith("e"))
                     // if you ever going to use an actual DB
                     // and an orm, change this where condition
                     // as e => !e.CID.EndsWith(EditorialConstant);

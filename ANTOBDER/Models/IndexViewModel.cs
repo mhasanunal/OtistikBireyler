@@ -1,4 +1,5 @@
 ﻿using ANTOBDER.Models;
+using ANTOBDER.Models.EF_MODELS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ namespace ANTOBDER
 {
     public class IndexViewModel
     {
-        public IEnumerable<BaseContent> Editorial { get; set; }
-        public IEnumerable<BaseContent> Events { get; set; }
+        public IEnumerable<Content> Editorial { get; set; }
+        public IEnumerable<Content> Events { get; set; }
 
     }
 }

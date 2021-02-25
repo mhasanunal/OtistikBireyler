@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 @{
-                    var editorials = _Extentions.GetEditorials();
+                    var editorials = new ANTOBDER.Models.EF_MODELS.EF_CONTEXT().Contents.Where(e => e.CID.EndsWith("e")).OrderByDescending(e => e.On).Take(6);
 
                 }
                 <div class="col-lg-@(editorials.Count()>0?"8":"10") col-md-12">

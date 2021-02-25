@@ -1,8 +1,10 @@
-﻿using ANTOBDER.Models;
+﻿using ANTOBDER.Models.EF_MODELS;
+using ANTOBDER.Models;
 using ANTOBDER.Modules;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -26,7 +28,7 @@ namespace ANTOBDER.Controllers
             var img = model.ImageFile.FileName;
             var path = SaveFiles(model);
 
-            var content = new BaseContent()
+            var content = new Content()
             {
                 CID = model.CID,
                 Author = model.Author.BuildUpAuthorText(),
@@ -41,7 +43,7 @@ namespace ANTOBDER.Controllers
             CreateMeta(path, content);
             try
             {
-                using (var dbContext = new ContextBase())
+                using (var dbContext = new EF_CONTEXT())
                 {
 
                     dbContext.Contents.Add(content);
@@ -70,9 +72,9 @@ namespace ANTOBDER.Controllers
         public string DeleteAll()
         {
             int deleted;
-            using (var dbContext = new ContextBase())
+            using (var dbContext = new EF_CONTEXT())
             {
-                dbContext.Contents.Clear();
+                dbContext.Contents.RemoveRange(dbContext.Contents);
                 deleted = dbContext.SaveChanges();
 
             }
@@ -80,9 +82,9 @@ namespace ANTOBDER.Controllers
         }
         public ActionResult ReadArticle(string id)
         {
-            BaseContent content;
+            Content content;
 
-            using (var dbContext = new ContextBase())
+            using (var dbContext = new EF_CONTEXT())
             {
                 content = dbContext.Contents.FirstOrDefault(i => i.CID == id);
 
@@ -189,16 +191,16 @@ namespace ANTOBDER.Controllers
             bool listAll = false
             )
         {
-            List<BaseContent> result;
+            List<Content> result;
             string filter = null;
             var authorFunc = funcByAuthor(author.BuildUpAuthorText(), out string authorFilter);
             var tagsFunc = funcByTags(tags, out string tagFilter);
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
-                var filtered = db.Contents.Where(content => authorFunc(content) && tagsFunc(content));
+                var filtered = db.Contents.ToList().Where(content => authorFunc(content) && tagsFunc(content));
                 if (!listAll)
                 {
-                    filtered = filtered.Where(content => !content.IsEditorial);
+                    filtered = filtered.Where(content => !content.IsEditorial());
                 }
                 result = filtered.ToList();
             }
@@ -211,10 +213,10 @@ namespace ANTOBDER.Controllers
                 tagFilter = tagFilter.Substring(0, tagFilter.Length - 1);
                 filter = string.IsNullOrEmpty(filter) ? tagFilter : filter + ";" + tagFilter;
             }
-            return View(new Tuple<string, IEnumerable<BaseContent>>(filter, result));
+            return View(new Tuple<string, IEnumerable<Content>>(filter, result));
         }
 
-        private Func<BaseContent, bool> funcByTags(string tags, out string filter)
+        private Func<Content, bool> funcByTags(string tags, out string filter)
         {
             filter = string.IsNullOrEmpty(tags) ? null : tags.Split('_').Aggregate("Etiket(ler): ", (seed, next) => { return seed + next + ", "; });
             var _culture = new CultureInfo("tr-TR");
@@ -232,7 +234,7 @@ namespace ANTOBDER.Controllers
                 || string.IsNullOrEmpty(tags);
         }
 
-        private Func<BaseContent, bool> funcByAuthor(string author, out string filter)
+        private Func<Content, bool> funcByAuthor(string author, out string filter)
         {
             filter = string.IsNullOrEmpty(author) ? null : "Yazar: " + author;
             return c => (!string.IsNullOrEmpty(author) && c.Author == author) || string.IsNullOrEmpty(author);
@@ -242,7 +244,7 @@ namespace ANTOBDER.Controllers
         public ActionResult Delete(string id)
         {
 
-            using (var dbContext = new ContextBase())
+            using (var dbContext = new EF_CONTEXT())
             {
                 if (_Extentions.IsIdSafe(id) && Directory.Exists(_Extentions.Locate(id)))
                 {
@@ -260,11 +262,11 @@ namespace ANTOBDER.Controllers
         }
         #region PRIVATE
 
-        void CreateMeta(string path, BaseContent content)
+        void CreateMeta(string path, Content content)
         {
             var filename = "meta.txt";
             var input = new StringBuilder();
-            var coluns = new BaseSet<BaseContent, int>().Columns;
+            var coluns = content.Columns();
             foreach (var item in coluns)
             {
                 input.Append(item + ";");
@@ -272,7 +274,7 @@ namespace ANTOBDER.Controllers
             input.AppendLine();
             foreach (var item in coluns)
             {
-                var prop = typeof(BaseContent).GetProperty(item);
+                var prop = typeof(Content).GetProperty(item);
                 if (prop.PropertyType == typeof(DateTime))
                 {
                     input.Append(((DateTime)prop.GetValue(content)).ToString("yyyy-MM-dd HH:mm") + ";");
@@ -320,16 +322,27 @@ namespace ANTOBDER.Controllers
         }
         private string SaveImage(string path, string name, string extension, Stream stream)
         {
-            var imagePath = path + "\\" + name + extension;
-            var fileStream = System.IO.File.Create(imagePath);
-            stream.Seek(0, SeekOrigin.Begin);
-            stream.CopyTo(fileStream);
-            fileStream.Close();
-            if (extension.ToLower() == ".jpg")
-            {
-                DecideResizeOfImage(imagePath);
-            }
-            return imagePath;
+            var imageFileName = name + extension;
+
+            Antobder.Drawing.ReducerOptions opt = new Antobder.Drawing.ReducerOptions(
+                filename: imageFileName,
+                maxSummaryOfWidthAndHeight: int.Parse(ConfigurationManager.AppSettings["maxSummaryOfWidthAndHeight"]),
+                destinationFolder: path
+                );
+
+            Antobder.Drawing.ImageSizeReducer.ReduceSizeOnDisk(stream, opt);
+
+            //var fileStream = System.IO.File.Create(imagePath);
+            //stream.Seek(0, SeekOrigin.Begin);
+            //stream.CopyTo(fileStream);
+            //fileStream.Close();
+
+            //if (extension.ToLower() == ".jpg")
+
+            //{
+            //    DecideResizeOfImage(imagePath);
+            //}
+            return path + "\\" + imageFileName;
         }
 
         private void DecideResizeOfImage(string path)
@@ -371,7 +384,7 @@ namespace ANTOBDER.Controllers
         {
             string directory = "";
             if (_Extentions.IsIdSafe(cid) && !Directory.Exists(_Extentions.Locate(cid)))
-                directory = new BaseContent() { CID = cid }.GenerateDirectory();
+                directory = new Content() { CID = cid }.GenerateDirectory();
             return directory;
         }
         #endregion

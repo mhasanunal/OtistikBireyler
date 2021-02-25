@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Net.Mime;
 using ANTOBDER.Modules;
 using System.Globalization;
+using ANTOBDER.Models.EF_MODELS;
 
 namespace ANTOBDER.Controllers
 {
@@ -56,7 +57,7 @@ namespace ANTOBDER.Controllers
 
             var cd = new ContentDisposition("attachment")
             {
-                
+
                 FileName = $"ANTOBDER-@{DateTime.Now.ToString("yyyyMMdd")}_UNTIL@{date}.bkp",
                 Inline = false
             };
@@ -88,9 +89,9 @@ namespace ANTOBDER.Controllers
         public ActionResult ResetDatabase()
         {
             int total;
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
-                db.Contents.Clear();
+                db.Contents.RemoveRange(db.Contents);
                 total = db.SaveChanges();
             }
             TempData["Result"] = "Toplam " + total + " içerik veritabanından silindi";
@@ -101,9 +102,9 @@ namespace ANTOBDER.Controllers
         public ActionResult ResetDatabaseAndDeleteFolders()
         {
             int total = 0;
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
-                db.Contents.Clear();
+                db.Contents.RemoveRange(db.Contents);
                 total = db.SaveChanges();
             }
             if (Directory.Exists(_Extentions.EditorialRootPath()))
@@ -139,20 +140,20 @@ namespace ANTOBDER.Controllers
         private int RecoverFromBackup(string destination, bool wipeDBFirst)
         {
             int total = 0;
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
 
                 if (wipeDBFirst)
                 {
-                    db.Contents.Clear();
-                    db.SaveChanges();
+                    db.Contents.RemoveRange(db.Contents);
+                    total = db.SaveChanges();
                 }
 
-                var normalDbDir = _Extentions.GetDatabaseDir()
-                                    .Replace(_Extentions.GetRootDirectory(), "");
-                var backedUpDatabaseDir = destination + "\\" + normalDbDir;
-                var backedUpContext = new ContextBase("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + backedUpDatabaseDir);
-                foreach (var item in backedUpContext.Contents)
+                //var normalDbDir = _Extentions.GetDatabaseDir()
+                //                    .Replace(_Extentions.GetRootDirectory(), "");
+                //var backedUpDatabaseDir = destination + "\\" + normalDbDir;
+                var backedUpContext = new YALANCI_CONTEXT(destination);
+                foreach (var item in backedUpContext.Contents())
                 {
                     if (db.Contents.Any(c => c.CID == item.CID))
                     {
@@ -212,7 +213,7 @@ namespace ANTOBDER.Controllers
 
         public ActionResult CreateUser(User usr)
         {
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
 
                 if (db.Users.Any(c => c.Username.ToLower() == usr.Username.ToLower()))
@@ -239,7 +240,7 @@ namespace ANTOBDER.Controllers
         public ActionResult Users()
         {
             IEnumerable<User> users;
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
                 users = db.Users.ToList();
             }
@@ -249,7 +250,7 @@ namespace ANTOBDER.Controllers
         public ActionResult ChangeUserPassword(int id, string changedPassword)
         {
             string username;
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
                 var user = db.Users.First(u => u.Id == id);
                 if (user == null)
@@ -341,6 +342,8 @@ namespace ANTOBDER.Controllers
             using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
             {
                 BackupUntil(until, _Extentions.ArticleRootPath(), zip, deleteFile);
+
+                BackupDBasCSV(zip);
                 var dbRoot = _Extentions.GetDatabaseDir();
                 var toBeReplaced = _Extentions.GetRootDirectory();
                 var dbEntry = zip.CreateEntry(dbRoot.Replace(toBeReplaced + "\\", ""));
@@ -374,9 +377,9 @@ namespace ANTOBDER.Controllers
                     Directory.Delete(_Extentions.EditorialRootPath(), true);
                     try
                     {
-                        using (var db = new ContextBase())
+                        using (var db = new EF_CONTEXT())
                         {
-                            db.Contents.Clear();
+                            db.Contents.RemoveRange(db.Contents);
                             db.SaveChanges();
                         }
                     }
@@ -390,6 +393,26 @@ namespace ANTOBDER.Controllers
 
             return zipStream;
         }
+
+        private void BackupDBasCSV(ZipArchive zip)
+        {
+            using (var db = new EF_CONTEXT())
+            {
+            var yalanci = new YALANCI_CONTEXT(db,zip);
+
+                yalanci.ZipEntryFor_dynamicHTMLPages();
+                yalanci.ZipEntryFor_siteSettings();
+                yalanci.ZipEntryFor_contents();
+
+              
+
+
+                
+            }
+
+
+        }
+
         void BackupUntil(DateTime? until, string path, ZipArchive zip, bool deleteFile)
         {
             IEnumerable<string> files = FromDirectory(path);

@@ -1,5 +1,6 @@
 ﻿using ANTOBDER.App_Start;
 using ANTOBDER.Models;
+using ANTOBDER.Models.EF_MODELS;
 using ANTOBDER.Modules;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -63,7 +64,7 @@ namespace ANTOBDER.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Kullanıcı adı veya Şifre girilmedi!");
+                ModelState.AddModelError("", "Kullanıcı adı ve/veya Şifre girilmedi!");
                 return View(info);
             }
             if (!CheckLogin(info))
@@ -108,7 +109,7 @@ namespace ANTOBDER.Controllers
         {
             User user;
 
-            using (var db = new ContextBase())
+            using (var db = new EF_CONTEXT())
             {
                 user = db.Users.FirstOrDefault(f => f.Username == username);
 
